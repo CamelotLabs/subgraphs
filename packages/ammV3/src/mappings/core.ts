@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import {Bundle, Burn, Factory, Mint, Pool, Swap, Tick, PoolPosition, Token, PoolFeeData} from '../types/schema'
 import {Pool as PoolABI} from '../types/Factory/Pool'
-import {BigDecimal, BigInt, ethereum, log} from '@graphprotocol/graph-ts'
+import {BigDecimal, BigInt, ethereum, Bytes} from '@graphprotocol/graph-ts'
 
 import {
   Burn as BurnEvent,
@@ -14,7 +14,7 @@ import {
   TickSpacing
 } from '../types/templates/Pool/Pool'
 import {convertTokenToDecimal, loadTransaction, safeDiv} from '../utils'
-import {FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI, poolsList, TICK_SPACING} from '../utils/constants'
+import { FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI, poolsList, TICK_SPACING, ADDRESS_ZERO } from '../utils/constants'
 import {findEthPerToken, getEthPriceInUSD, getTrackedAmountUSD, priceToTokenPrices} from '../utils/pricing'
 import {
   updatePoolDayData,
@@ -26,6 +26,7 @@ import {
   updateFeeHourData
 } from '../utils/intervalUpdates'
 import {createTick} from '../utils/tick'
+import { getPoolUser, getUser } from './position-manager'
 
 
 function updateTickFeeVarsAndSave(tick: Tick, event: ethereum.Event): void {
@@ -82,7 +83,6 @@ export function handleMint(event: MintEvent): void {
   let poolAddress = event.address.toHexString()
   let pool = Pool.load(poolAddress)!
   let factory = Factory.load(FACTORY_ADDRESS)!
-
 
   let token0 = Token.load(pool.token0)!
   let token1 = Token.load(pool.token1)!
@@ -186,12 +186,13 @@ export function handleMint(event: MintEvent): void {
   if (poolPosition) {
     poolPosition.liquidity = poolPosition.liquidity.plus(event.params.liquidityAmount)
   } else {
+    let owner = getUser(event.params.owner)
     poolPosition = new PoolPosition(poolPositionid)
     poolPosition.pool = pool.id
     poolPosition.tickLower = lowerTick.id
     poolPosition.tickUpper = upperTick.id
     poolPosition.liquidity = event.params.liquidityAmount
-    poolPosition.owner = event.params.owner
+    poolPosition.owner = owner.id
     poolPosition.uncollectedBurnedAmount0 = ZERO_BD
     poolPosition.uncollectedBurnedAmount1 = ZERO_BD
     poolPosition.collectedFeesToken0 = ZERO_BD
@@ -631,12 +632,22 @@ export function handleCollect(event: Collect): void {
   let token1 = Token.load(pool.token1)!
   let poolPositionid = pool.id + "#" + event.params.owner.toHexString() + '#' + BigInt.fromI32(event.params.bottomTick).toString() + "#" + BigInt.fromI32(event.params.topTick).toString()
   let poolPosition = PoolPosition.load(poolPositionid)
+
   if (poolPosition) {
-    poolPosition.collectedFeesToken0 = poolPosition.collectedFeesToken0.plus(convertTokenToDecimal(event.params.amount0, token0.decimals).minus(poolPosition.uncollectedBurnedAmount0))
-    poolPosition.collectedFeesToken1 = poolPosition.collectedFeesToken1.plus(convertTokenToDecimal(event.params.amount1, token1.decimals).minus(poolPosition.uncollectedBurnedAmount1))
+    let poolUser = getPoolUser(poolAddress, poolPosition.owner)
+
+    let collectedFeesToken0 = convertTokenToDecimal(event.params.amount0, token0.decimals).minus(poolPosition.uncollectedBurnedAmount0)
+    let collectedFeesToken1 = convertTokenToDecimal(event.params.amount1, token1.decimals).minus(poolPosition.uncollectedBurnedAmount1)
+
+    poolPosition.collectedFeesToken0 = poolPosition.collectedFeesToken0.plus(collectedFeesToken0)
+    poolPosition.collectedFeesToken1 = poolPosition.collectedFeesToken1.plus(collectedFeesToken1)
+
+    poolUser.collectedFeesToken0 = poolUser.collectedFeesToken0.plus(collectedFeesToken0)
+    poolUser.collectedFeesToken1 = poolUser.collectedFeesToken0.plus(collectedFeesToken1)
 
     poolPosition.uncollectedBurnedAmount0 = ZERO_BD
     poolPosition.uncollectedBurnedAmount1 = ZERO_BD
+    poolUser.save()
     poolPosition.save()
   }
   // update globals
@@ -655,7 +666,6 @@ export function handleCollect(event: Collect): void {
   token1.save()
   pool.save()
   factory.save()
-
 }
 
 export function handleChangeFee(event: ChangeFee): void {

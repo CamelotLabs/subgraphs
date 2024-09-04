@@ -12,7 +12,7 @@ import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { getEthPriceInUSD } from '../utils/pricing'
 
-function getUser(address: Bytes) : User {
+export function getUser(address: Bytes) : User {
   let user = User.load(address)
   if(user === null) {
     user = new User(address)
@@ -21,7 +21,7 @@ function getUser(address: Bytes) : User {
   return user
 }
 
-function getPoolUser(pool: string, user: Bytes) : PoolUser {
+export function getPoolUser(pool: string, user: Bytes) : PoolUser {
   let id = Bytes.fromHexString(pool).concat(user)
   let poolUser = PoolUser.load(id)
   if(poolUser === null) {

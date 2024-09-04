@@ -203,7 +203,7 @@ type PoolPosition @entity {
   pool: Pool!
   tickLower: Tick!
   tickUpper: Tick!
-  owner: Bytes!
+  owner: User!
   liquidity: BigInt!
   uncollectedBurnedAmount0: BigDecimal!
   uncollectedBurnedAmount1: BigDecimal!
@@ -420,7 +420,7 @@ type Collect @entity {
   # pool collect occured within
   pool: Pool!
   # owner of position collect was performed on
-  owner: Bytes
+  owner: User!
   # amount of token0 collected
   amount0: BigDecimal!
   # amount of token1 collected
