@@ -643,7 +643,7 @@ export function handleCollect(event: Collect): void {
     poolPosition.collectedFeesToken1 = poolPosition.collectedFeesToken1.plus(collectedFeesToken1)
 
     poolUser.collectedFeesToken0 = poolUser.collectedFeesToken0.plus(collectedFeesToken0)
-    poolUser.collectedFeesToken1 = poolUser.collectedFeesToken0.plus(collectedFeesToken1)
+    poolUser.collectedFeesToken1 = poolUser.collectedFeesToken1.plus(collectedFeesToken1)
 
     poolPosition.uncollectedBurnedAmount0 = ZERO_BD
     poolPosition.uncollectedBurnedAmount1 = ZERO_BD
