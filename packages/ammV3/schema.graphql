@@ -217,6 +217,8 @@ type Position @entity {
   id: ID!
   # owner of the NFT
   owner: User!
+  # previous owner of the NFT
+  prevOwner: User!
   # pool position is within
   pool: Pool!
   # allow indexing by tokens
