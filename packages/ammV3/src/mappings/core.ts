@@ -198,6 +198,7 @@ export function handleMint(event: MintEvent): void {
     poolPosition.collectedFeesToken0 = ZERO_BD
     poolPosition.collectedFeesToken1 = ZERO_BD
   }
+  poolPosition.lastUpdatedAtBlock = event.block.number
 
   // TODO: Update Tick's volume, fees, and liquidity provider count
 
@@ -320,6 +321,7 @@ export function handleBurn(event: BurnEvent): void {
     poolPosition.liquidity = poolPosition.liquidity.minus(event.params.liquidityAmount)
     poolPosition.uncollectedBurnedAmount0 = poolPosition.uncollectedBurnedAmount0.plus(amount0)
     poolPosition.uncollectedBurnedAmount1 = poolPosition.uncollectedBurnedAmount1.plus(amount1)
+    poolPosition.lastUpdatedAtBlock = event.block.number
     poolPosition.save()
   }
 
@@ -647,9 +649,12 @@ export function handleCollect(event: Collect): void {
 
     poolPosition.uncollectedBurnedAmount0 = ZERO_BD
     poolPosition.uncollectedBurnedAmount1 = ZERO_BD
+
+    poolPosition.lastUpdatedAtBlock = event.block.number
     poolUser.save()
     poolPosition.save()
   }
+
   // update globals
   factory.txCount = factory.txCount.plus(ONE_BI)
 
