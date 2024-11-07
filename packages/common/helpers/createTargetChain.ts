@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url'
 import path from "path"
 import ChainInfo from "./chainInfo.ts"
 import dotenv from "dotenv"
-import { ethers } from "ethers"
 
 const getCurrentDir = () => {
   const __filename = fileURLToPath(import.meta.url)
@@ -27,11 +26,11 @@ const network = subgraphConfig?.network || "arbitrum-one"
 
 // AMM V2 PARAMS
 const ammv2Name = config?.subgraphs.ammV2.name
-const factoryV2 = ethers.getAddress(config?.contracts.factoryV2)
-const wrappedNativeV2 = config?.assets.native.address
-const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2
-const whitelistTokensV2 = subgraphConfig?.whitelistTokensV2
-const stableCoin = config?.assets.stable
+const factoryV2 = config?.contracts.factoryV2.toLowerCase()
+const wrappedNativeV2 = config?.assets.native.address.toLowerCase()
+const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2.toLowerCase()
+const whitelistTokensV2 = subgraphConfig?.whitelistTokensV2.map(token => token.toLowerCase())
+const stableCoin = config?.assets.stable.toLowerCase()
 const minimumUSDThresholdNewPairs = subgraphConfig?.minimumUSDThresholdNewPairs
 const minimumLiquidityThresholdETHV2 = subgraphConfig?.minimumLiquidityThresholdETHV2
 const minimumLiquidityETH = subgraphConfig?.minimumLiquidityETH
@@ -39,20 +38,20 @@ const startBlockAmmV2 = subgraphConfig?.startBlockAmmV2
 
 // AMM V3 PARAMS
 const ammv3Name = config?.subgraphs.ammV3.name
-const factoryV3 = config?.contracts.factoryV3
-const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3
-const wrappedNativeV3 = config?.assets.native.address
-const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3
+const factoryV3 = config?.contracts.factoryV3.toLowerCase()
+const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3.toLowerCase()
+const wrappedNativeV3 = config?.assets.native.address.toLowerCase()
+const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3.toLowerCase()
 const minimumLiquidityThresholdETHV3 = subgraphConfig?.minimumLiquidityThresholdETHV3
-const whitelistTokensV3 = subgraphConfig?.whitelistTokensV3
-const stableCoins = subgraphConfig?.stableCoins
+const whitelistTokensV3 = subgraphConfig?.whitelistTokensV3.map(token => token.toLowerCase())
+const stableCoins = subgraphConfig?.stableCoins.map(coin => coin.toLowerCase())
 const apiVersion = subgraphConfig?.apiVersion
 const startBlockAmmV3 = subgraphConfig?.startBlockAmmV3
 
 // INCENTIVES PARAMS
 const incentivesName = config?.subgraphs.incentives.name
-const campaignFactory = config?.contracts.campaignFactory
-const distributor = config?.contracts.distributor
+const campaignFactory = config?.contracts.campaignFactory.toLowerCase()
+const distributor = config?.contracts.distributor.toLowerCase()
 const startBlockIncentives = subgraphConfig?.startBlockIncentives
 
 // BLOCKS PARAMS
