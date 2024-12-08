@@ -103,7 +103,7 @@ type Pool @entity {
   # token1 per token0
   token1Price: BigDecimal!
   # current tick
-  tick: BigInt!
+  tick: BigInt
   # current observation index
   observationIndex: BigInt!
   # all time token0 swapped
@@ -205,8 +205,12 @@ type PoolPosition @entity {
   pool: Pool!
   lowerTick: Tick!
   upperTick: Tick!
-  owner: Bytes!
+  owner: User!
   liquidity: BigInt!
+  uncollectedBurnedAmount0: BigDecimal!
+  uncollectedBurnedAmount1: BigDecimal!
+  collectedFeesToken0: BigDecimal!
+  collectedFeesToken1: BigDecimal!
 }
 
 type Position @entity {
@@ -214,7 +218,7 @@ type Position @entity {
   # NFT token id
   id: ID!
   # owner of the NFT
-  owner: Bytes!
+  owner: User!
   # pool position is within
   pool: Pool!
   # allow indexing by tokens
@@ -249,15 +253,15 @@ type Position @entity {
   feeGrowthInside0LastX128: BigInt!
   feeGrowthInside1LastX128: BigInt!
 
-  token0Tvl : BigDecimal
-  token1Tvl : BigDecimal 
+  token0Tvl: BigDecimal
+  token1Tvl: BigDecimal
 }
 
 type PositionSnapshot @entity {
   # <NFT token id>#<block number>
   id: ID!
   # owner of the NFT
-  owner: Bytes!
+  owner: User!
   # pool the position is within
   pool: Pool!
   # position of which the snap was taken of
@@ -289,7 +293,7 @@ type PositionSnapshot @entity {
 
 type Transaction @entity {
   # txn hash
-  id: ID!
+  id: Bytes!
   # block txn was included in
   blockNumber: BigInt!
   # timestamp txn was confirmed
@@ -307,7 +311,7 @@ type Transaction @entity {
 
 type Mint @entity {
   # transaction hash + "#" + index in mints Transaction array
-  id: ID!
+  id: Bytes!
   # which txn the mint was included in
   transaction: Transaction!
   # time of txn
@@ -342,7 +346,7 @@ type Mint @entity {
 
 type Burn @entity {
   # transaction hash + "#" + index in mints Transaction array
-  id: ID!
+  id: Bytes!
   # txn burn was included in
   transaction: Transaction!
   # pool position is within
@@ -375,7 +379,7 @@ type Burn @entity {
 
 type Swap @entity {
   # transaction hash + "#" + index in swaps Transaction array
-  id: ID!
+  id: Bytes!
   # pointer to transaction
   transaction: Transaction!
   # timestamp of transaction
@@ -410,7 +414,7 @@ type Swap @entity {
 
 type Collect @entity {
   # transaction hash + "#" + index in collect Transaction array
-  id: ID!
+  id: Bytes!
   # pointer to txn
   transaction: Transaction!
   # timestamp of event
@@ -418,7 +422,7 @@ type Collect @entity {
   # pool collect occured within
   pool: Pool!
   # owner of position collect was performed on
-  owner: Bytes
+  owner: User!
   # amount of token0 collected
   amount0: BigDecimal!
   # amount of token1 collected
@@ -435,7 +439,7 @@ type Collect @entity {
 
 type Flash @entity {
   # transaction hash + "-" + index in collect Transaction array
-  id: ID!
+  id: Bytes!
   # pointer to txn
   transaction: Transaction!
   # timestamp of event
@@ -536,7 +540,6 @@ type PoolFeeData @entity{
   timestamp: BigInt!
 
   fee: BigInt!
-
 }
 
 # hourly stats tracker for pool
@@ -697,14 +700,6 @@ type TokenHourData @entity {
   close: BigDecimal!
 }
 
-type Plugin @entity {
-  id: ID!
-  pool: Pool!
-  collectedFeesToken0: BigDecimal!
-  collectedFeesToken1: BigDecimal!
-  collectedFeesUSD: BigDecimal!
-}
-
 type FeeHourData @entity {
   #
   id: ID!
@@ -723,5 +718,34 @@ type FeeHourData @entity {
   #
   startFee: BigInt!
   #
-  endFee: BigInt! 
+  endFee: BigInt!
+}
+
+type Plugin @entity {
+  id: ID!
+  pool: Pool!
+  collectedFeesToken0: BigDecimal!
+  collectedFeesToken1: BigDecimal!
+  collectedFeesUSD: BigDecimal!
+}
+
+type PoolUser @entity {
+  #
+  id: Bytes!
+  #
+  user: User!
+  #
+  pool: Pool!
+  #
+  collectedFeesUsd: BigDecimal!
+  #
+  collectedFeesToken0: BigDecimal!
+  collectedFeesToken1: BigDecimal!
+}
+
+type User @entity {
+  #
+  id: Bytes!
+  #
+  positions: [Position!]! @derivedFrom(field: "owner")
 }

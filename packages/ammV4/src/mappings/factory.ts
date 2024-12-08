@@ -1,6 +1,6 @@
 import { WHITELIST_TOKENS } from './../utils/pricing'
 /* eslint-disable prefer-const */
-import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, pools_list} from './../utils/constants'
+import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO} from './../utils/constants'
 import { Factory } from '../types/schema'
 import { Pool as PoolEvent } from '../types/Factory/Factory'
 import { DefaultCommunityFee, CustomPool } from '../types/Factory/Factory'
@@ -38,27 +38,19 @@ export function handlePoolCreated(event: PoolEvent): void {
 
   let pool = new Pool(event.params.pool.toHexString()) as Pool
   
-  let token0_address = event.params.token0
-  let token1_address = event.params.token1
+  let token0Address = event.params.token0
+  let token1Address = event.params.token1
 
-  let token0 = Token.load(token0_address.toHexString())
-  let token1 = Token.load(token1_address.toHexString())
-
-
-  if(pools_list.includes(event.params.pool.toHexString())){
-    token0 = Token.load(event.params.token1.toHexString())
-    token1 = Token.load(event.params.token0.toHexString())
-    token0_address = event.params.token1
-    token1_address = event.params.token0  
-  }  
+  let token0 = Token.load(token0Address.toHexString())
+  let token1 = Token.load(token1Address.toHexString())
 
   // fetch info if null
   if (token0 === null) {
-    token0 = new Token(token0_address.toHexString())
-    token0.symbol = fetchTokenSymbol(token0_address)
-    token0.name = fetchTokenName(token0_address)
-    token0.totalSupply = fetchTokenTotalSupply(token0_address)
-    let decimals = fetchTokenDecimals(token0_address)
+    token0 = new Token(token0Address.toHexString())
+    token0.symbol = fetchTokenSymbol(token0Address)
+    token0.name = fetchTokenName(token0Address)
+    token0.totalSupply = fetchTokenTotalSupply(token0Address)
+    let decimals = fetchTokenDecimals(token0Address)
 
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
@@ -81,11 +73,11 @@ export function handlePoolCreated(event: PoolEvent): void {
   }
 
   if (token1 === null) {
-    token1 = new Token(token1_address.toHexString())
-    token1.symbol = fetchTokenSymbol(token1_address)
-    token1.name = fetchTokenName(token1_address)
-    token1.totalSupply = fetchTokenTotalSupply(token1_address)
-    let decimals = fetchTokenDecimals(token1_address)
+    token1 = new Token(token1Address.toHexString())
+    token1.symbol = fetchTokenSymbol(token1Address)
+    token1.name = fetchTokenName(token1Address)
+    token1.totalSupply = fetchTokenTotalSupply(token1Address)
+    let decimals = fetchTokenDecimals(token1Address)
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
       log.debug('mybug the decimal on token 0 was null', [])
@@ -198,14 +190,6 @@ export function handleCustomPoolCreated(event: CustomPool): void {
 
   let token0 = Token.load(token0_address.toHexString())
   let token1 = Token.load(token1_address.toHexString())
-
-
-  if(pools_list.includes(event.params.pool.toHexString())){
-    token0 = Token.load(event.params.token1.toHexString())
-    token1 = Token.load(event.params.token0.toHexString())
-    token0_address = event.params.token1
-    token1_address = event.params.token0  
-  }  
 
   // fetch info if null
   if (token0 === null) {
