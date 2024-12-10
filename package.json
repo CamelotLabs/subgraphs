@@ -8,6 +8,7 @@
   "scripts": {
     "deploy-ammv2": "pnpm --filter common run get-chain-config-prod && pnpm --filter amm-v2 run set-config && pnpm --filter amm-v2 run codegen && pnpm --filter amm-v2 run build && pnpm --filter amm-v2 run deploy",
     "deploy-ammv3": "pnpm --filter common run get-chain-config-prod && pnpm --filter amm-v3 run set-config && pnpm --filter amm-v3 run codegen && pnpm --filter amm-v3 run build && pnpm --filter amm-v3 run deploy",
+    "deploy-ammv4": "pnpm --filter common run get-chain-config-prod && pnpm --filter amm-v4 run set-config && pnpm --filter amm-v4 run codegen && pnpm --filter amm-v4 run build && pnpm --filter amm-v4 run deploy",
     "deploy-blocks": "pnpm --filter common run get-chain-config-prod && pnpm --filter blocks run set-config && pnpm --filter blocks run codegen && pnpm --filter blocks run build && pnpm --filter blocks run deploy",
     "deploy-incentives": "pnpm --filter common run get-chain-config-prod && pnpm --filter incentives run set-config && pnpm --filter incentives run codegen && pnpm --filter incentives run build && pnpm --filter incentives run deploy",
     "deploy-all": "pnpm --filter common run get-chain-config-prod && ts-node-esm -P tsconfig.node.json deployAll.ts"
