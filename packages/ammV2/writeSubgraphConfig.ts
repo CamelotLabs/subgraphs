@@ -7,7 +7,7 @@ const {
 
   // AMM V2 PARAMS
   factoryV2,
-  startBlockAmmV2,
+  startBlock,
 } = TARGET_CHAIN
 
 const { subgraphYaml, subgraphPath } = loadSubgraphConfig()
@@ -15,7 +15,7 @@ const { subgraphYaml, subgraphPath } = loadSubgraphConfig()
 const factory = subgraphYaml.dataSources[0] as any
 factory.network = network
 factory.source.address = factoryV2
-factory.source.startBlock = startBlockAmmV2
+factory.source.startBlock = startBlock
 subgraphYaml.templates[0].network = network
 
 saveSubgraphConfig(subgraphYaml, subgraphPath)
