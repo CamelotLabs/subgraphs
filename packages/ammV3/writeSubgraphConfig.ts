@@ -7,8 +7,8 @@ const {
 
   // AMM V3 PARAMS
   factoryV3,
-  nftPositionManager,
-  startBlockAmmV3,
+  nftPositionManagerV3,
+  startBlock,
   apiVersion,
 } = TARGET_CHAIN
 
@@ -19,12 +19,12 @@ const NFTPositionManager = subgraphYaml.dataSources[1]
 
 factory.network = network
 factory.source.address = factoryV3
-factory.source.startBlock = startBlockAmmV3
+factory.source.startBlock = startBlock
 factory.mapping.apiVersion = apiVersion
 
 NFTPositionManager.network = network
-NFTPositionManager.source.address = nftPositionManager
-NFTPositionManager.source.startBlock = startBlockAmmV3
+NFTPositionManager.source.address = nftPositionManagerV3
+NFTPositionManager.source.startBlock = startBlock
 NFTPositionManager.mapping.apiVersion = apiVersion
 
 subgraphYaml.templates[0].network = network
