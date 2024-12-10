@@ -24,17 +24,20 @@ const subgraphConfig = config?.subgraphs.config
 // UNIVERSAL SELECTED CHAIN PARAM - USED FOR `network` IN `subgraph.yaml`
 const network = subgraphConfig?.network || "arbitrum-one"
 
+// UNIVERSAL PARAMS
+const whitelistTokens = subgraphConfig?.whitelistTokens.map(token => token.toLowerCase())
+const stableCoins = subgraphConfig?.stableCoins.map(coin => coin.toLowerCase())
+const minimumUSDThresholdNewPairs = subgraphConfig?.minimumUSDThresholdNewPairs
+const minimumLiquidityThresholdETH = subgraphConfig?.minimumLiquidityThresholdETH
+const minimumLiquidityETH = subgraphConfig?.minimumLiquidityETH
+const startBlock = subgraphConfig?.startBlock
+const apiVersion = subgraphConfig?.apiVersion
+
 // AMM V2 PARAMS
 const ammv2Name = config?.subgraphs.ammV2.name
 const factoryV2 = config?.contracts.factoryV2.toLowerCase()
 const wrappedNativeV2 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2.toLowerCase()
-const whitelistTokensV2 = subgraphConfig?.whitelistTokensV2.map(token => token.toLowerCase())
-const stableCoin = config?.assets.stable.toLowerCase()
-const minimumUSDThresholdNewPairs = subgraphConfig?.minimumUSDThresholdNewPairs
-const minimumLiquidityThresholdETHV2 = subgraphConfig?.minimumLiquidityThresholdETHV2
-const minimumLiquidityETH = subgraphConfig?.minimumLiquidityETH
-const startBlockAmmV2 = subgraphConfig?.startBlockAmmV2
 
 // AMM V3 PARAMS
 const ammv3Name = config?.subgraphs.ammV3.name
@@ -42,59 +45,66 @@ const factoryV3 = config?.contracts.factoryV3.toLowerCase()
 const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3.toLowerCase()
 const wrappedNativeV3 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3.toLowerCase()
-const minimumLiquidityThresholdETHV3 = subgraphConfig?.minimumLiquidityThresholdETHV3
-const whitelistTokensV3 = subgraphConfig?.whitelistTokensV3.map(token => token.toLowerCase())
-const stableCoins = subgraphConfig?.stableCoins.map(coin => coin.toLowerCase())
-const apiVersion = subgraphConfig?.apiVersion
-const startBlockAmmV3 = subgraphConfig?.startBlockAmmV3
+
+// AMM V4 PARAMS
+const ammv4Name = config?.subgraphs.ammV4.name
+const factoryV4 = config?.contracts.factoryV4.toLowerCase()
+const nftPositionManagerV4 = config?.contracts.nftPositionManagerV4.toLowerCase()
+const wrappedNativeV4 = config?.assets.native.address.toLowerCase()
+const wrappedNativeUSDCPoolV4 = config?.assets.nativePairV4.toLowerCase()
 
 // INCENTIVES PARAMS
 const incentivesName = config?.subgraphs.incentives.name
 const campaignFactory = config?.contracts.campaignFactory?.toLowerCase()
 const distributor = config?.contracts.distributor?.toLowerCase()
-const startBlockIncentives = subgraphConfig?.startBlockIncentives
 
 // BLOCKS PARAMS
 const blocksName = config?.subgraphs.blocks.name
 
-// name is undefined, need to edit
-
 console.log("AMMv2", config?.subgraphs.ammV2)
 console.log("AMMv3", config?.subgraphs.ammV3)
+console.log("AMMv4", config?.subgraphs.ammV4)
 console.log("blocks", config?.subgraphs.blocks)
 console.log("incentives", config?.subgraphs.incentives)
 
 const TARGET_CHAIN: ChainInfo = new ChainInfo(
   network,
 
+  whitelistTokens,
+  stableCoins,
+  minimumUSDThresholdNewPairs,
+  minimumLiquidityThresholdETH,
+  minimumLiquidityETH,
+  startBlock,
+  apiVersion,
+
+  // AMM V2 PARAMS
   ammv2Name,
   factoryV2,
   wrappedNativeV2,
   wrappedNativeUSDCPoolV2,
-  whitelistTokensV2,
-  stableCoin,
-  minimumUSDThresholdNewPairs,
-  minimumLiquidityThresholdETHV2,
-  minimumLiquidityETH,
-  startBlockAmmV2,
 
+  // AMM V3 PARAMS
   ammv3Name,
   factoryV3,
   nftPositionManagerV3,
   wrappedNativeV3,
   wrappedNativeUSDCPoolV3,
-  minimumLiquidityThresholdETHV3,
-  whitelistTokensV3,
-  stableCoins,
-  apiVersion,
-  startBlockAmmV3,
 
+  // AMM V4 PARAMS
+  ammv4Name,
+  factoryV4,
+  nftPositionManagerV4,
+  wrappedNativeV4,
+  wrappedNativeUSDCPoolV4,
+
+  // BLOCKS PARAMS
+  blocksName,
+
+  // INCENTIVES PARAMS
   incentivesName,
   campaignFactory,
-  distributor,
-  startBlockIncentives,
-
-  blocksName,
+  distributor
 )
 
 const targetChainContent = `
@@ -109,32 +119,35 @@ import ChainInfo from '../helpers/chainInfo';
 const TARGET_CHAIN: ChainInfo = new ChainInfo(
   "${network}",
 
+  // UNIVERSAL PARAMS
+  ${JSON.stringify(whitelistTokens)},
+  ${JSON.stringify(stableCoins)},
+  "${minimumUSDThresholdNewPairs}",
+  "${minimumLiquidityThresholdETH}",
+  "${minimumLiquidityETH}",
+  ${startBlock},
+  "${apiVersion}",
+
   "${ammv2Name}",
   "${factoryV2}",
   "${wrappedNativeV2}",
   "${wrappedNativeUSDCPoolV2}",
-  ${JSON.stringify(whitelistTokensV2)},
-  "${stableCoin}",
-  "${minimumUSDThresholdNewPairs}",
-  "${minimumLiquidityThresholdETHV2}",
-  "${minimumLiquidityETH}",
-  ${startBlockAmmV2},
 
   "${ammv3Name}",
   "${factoryV3}",
   "${nftPositionManagerV3}",
   "${wrappedNativeV3}",
   "${wrappedNativeUSDCPoolV3}",
-  "${minimumLiquidityThresholdETHV3}",
-  ${JSON.stringify(whitelistTokensV3)},
-  ${JSON.stringify(stableCoins)},
-  "${apiVersion}",
-  ${startBlockAmmV3},
+
+  "${ammv4Name}",
+  "${factoryV4}",
+  "${nftPositionManagerV4}",
+  "${wrappedNativeV4}",
+  "${wrappedNativeUSDCPoolV4}",
 
   "${incentivesName}",
   "${campaignFactory}",
   "${distributor}",
-  ${startBlockIncentives},
 
   "${blocksName}",
 );
