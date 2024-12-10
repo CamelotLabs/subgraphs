@@ -11,6 +11,6 @@ const getCurrentDir = () => {
 const currentDir = getCurrentDir()
 dotenv.config({ path: path.resolve(currentDir, '../../.env') });
 
-const { VERSION_BLOCKS, DEPLOY_KEY  } = process.env
+const { VERSION_BLOCKS, NODE_BLOCKS, DEPLOY_KEY  } = process.env
 
-execSync(`graph deploy ${TARGET_CHAIN.blocksName} --version-label ${VERSION_BLOCKS} --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key ${DEPLOY_KEY} --ipfs https://ipfs.satsuma.xyz`, { stdio: 'inherit' })
+execSync(`graph deploy ${TARGET_CHAIN.blocksName} --version-label ${VERSION_BLOCKS} --node ${NODE_BLOCKS || "https://subgraphs.alchemy.com/api/subgraphs/deploy"} --deploy-key ${DEPLOY_KEY} --ipfs https://ipfs.satsuma.xyz`, { stdio: 'inherit' })
