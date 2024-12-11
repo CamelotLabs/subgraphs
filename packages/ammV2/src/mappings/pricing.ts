@@ -10,7 +10,7 @@ import {
   WRAPPED_NATIVE,
   WRAPPED_NATIVE_USDC_POOL,
   WHITELIST,
-  STABLE_COINS,
+  STABLE_COIN,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
   MINIMUM_LIQUIDITY_THRESHOLD_ETH,
   MINIMUM_LIQUIDITY_ETH
@@ -21,7 +21,7 @@ export function getEthPriceInUSD(): BigDecimal {
   let usdcPair = Pair.load(WRAPPED_NATIVE_USDC_POOL) // usdc is token0
 
   if (usdcPair !== null) {
-    return STABLE_COINS.includes(usdcPair.token0) ? usdcPair.token0Price : usdcPair.token1Price
+    return STABLE_COIN === usdcPair.token0 ? usdcPair.token0Price : usdcPair.token1Price
   } else {
     return ZERO_BD
   }
@@ -73,10 +73,10 @@ export function findEthPerTokenWithoutCall(token: Token): BigDecimal {
   let lastPairReserveETH = BigDecimal.fromString(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
 
 
-  if( STABLE_COINS.includes(token.id)) {
+  if( STABLE_COIN === token.id) {
     let pair =  Pair.load(WRAPPED_NATIVE_USDC_POOL)
     if(pair) {
-      if(STABLE_COINS.includes(pair.token0)) {
+      if(STABLE_COIN === pair.token0) {
         let token1 = Token.load(pair.token1) as Token
         price = pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * Eth per token 1
       } else {

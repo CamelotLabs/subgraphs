@@ -38,6 +38,7 @@ const ammv2Name = config?.subgraphs.ammV2.name
 const factoryV2 = config?.contracts.factoryV2.toLowerCase()
 const wrappedNativeV2 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2.toLowerCase()
+const stableCoin = config?.assets.stable.toLowerCase()
 
 // AMM V3 PARAMS
 const ammv3Name = config?.subgraphs.ammV3.name
@@ -83,6 +84,7 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   factoryV2,
   wrappedNativeV2,
   wrappedNativeUSDCPoolV2,
+  stableCoin,
 
   // AMM V3 PARAMS
   ammv3Name,
@@ -132,7 +134,8 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   "${factoryV2}",
   "${wrappedNativeV2}",
   "${wrappedNativeUSDCPoolV2}",
-
+  "${stableCoin}",
+  
   "${ammv3Name}",
   "${factoryV3}",
   "${nftPositionManagerV3}",

@@ -17,6 +17,7 @@ class ChainInfo {
   factoryV2: string;
   wrappedNativeV2: string;
   wrappedNativeUSDCPoolV2: string;
+  stableCoin: string;
 
   // AMM V3 PARAMS
   ammv3Name: string;
@@ -58,7 +59,7 @@ class ChainInfo {
     factoryV2: string,
     wrappedNativeV2: string,
     wrappedNativeUSDCPoolV2: string,
-
+    stableCoin: string,
     // AMM V3 PARAMS
     ammv3Name: string,
     factoryV3: string,
@@ -98,7 +99,7 @@ class ChainInfo {
     this.factoryV2 = factoryV2 ? factoryV2.toLowerCase() : ZERO_ADDRESS
     this.wrappedNativeV2 = wrappedNativeV2 ? wrappedNativeV2.toLowerCase() : ZERO_ADDRESS
     this.wrappedNativeUSDCPoolV2 = wrappedNativeUSDCPoolV2 ? wrappedNativeUSDCPoolV2.toLowerCase() : ZERO_ADDRESS
-
+    this.stableCoin = stableCoin ? stableCoin.toLowerCase() : ZERO_ADDRESS
     // AMM V3 PARAMS
     this.ammv3Name = ammv3Name
     this.factoryV3 = factoryV3 ? factoryV3.toLowerCase() : ZERO_ADDRESS
