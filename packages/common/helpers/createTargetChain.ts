@@ -27,6 +27,7 @@ const network = subgraphConfig?.network || "arbitrum-one"
 // UNIVERSAL PARAMS
 const whitelistTokens = subgraphConfig?.whitelistTokens.map(token => token.toLowerCase())
 const stableCoins = subgraphConfig?.stableCoins.map(coin => coin.toLowerCase())
+const wrappedNative = config?.assets.native.address.toLowerCase()
 const minimumUSDThresholdNewPairs = subgraphConfig?.minimumUSDThresholdNewPairs
 const minimumLiquidityThresholdETH = subgraphConfig?.minimumLiquidityThresholdETH
 const minimumLiquidityETH = subgraphConfig?.minimumLiquidityETH
@@ -36,7 +37,6 @@ const apiVersion = subgraphConfig?.apiVersion
 // AMM V2 PARAMS
 const ammv2Name = config?.subgraphs.ammV2.name
 const factoryV2 = config?.contracts.factoryV2?.toLowerCase()
-const wrappedNativeV2 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2?.toLowerCase()
 const stableCoin = config?.assets.stable.toLowerCase()
 
@@ -44,14 +44,12 @@ const stableCoin = config?.assets.stable.toLowerCase()
 const ammv3Name = config?.subgraphs.ammV3.name
 const factoryV3 = config?.contracts.factoryV3?.toLowerCase()
 const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3?.toLowerCase()
-const wrappedNativeV3 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3?.toLowerCase()
 
 // AMM V4 PARAMS
 const ammv4Name = config?.subgraphs.ammV4.name
 const factoryV4 = config?.contracts.factoryV4?.toLowerCase()
 const nftPositionManagerV4 = config?.contracts.nftPositionManagerV4?.toLowerCase()
-const wrappedNativeV4 = config?.assets.native.address.toLowerCase()
 const wrappedNativeUSDCPoolV4 = config?.assets.nativePairV4?.toLowerCase()
 
 // INCENTIVES PARAMS
@@ -73,6 +71,7 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
 
   whitelistTokens,
   stableCoins,
+  wrappedNative,
   minimumUSDThresholdNewPairs,
   minimumLiquidityThresholdETH,
   minimumLiquidityETH,
@@ -82,7 +81,6 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   // AMM V2 PARAMS
   ammv2Name,
   factoryV2,
-  wrappedNativeV2,
   wrappedNativeUSDCPoolV2,
   stableCoin,
 
@@ -90,14 +88,12 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   ammv3Name,
   factoryV3,
   nftPositionManagerV3,
-  wrappedNativeV3,
   wrappedNativeUSDCPoolV3,
 
   // AMM V4 PARAMS
   ammv4Name,
   factoryV4,
   nftPositionManagerV4,
-  wrappedNativeV4,
   wrappedNativeUSDCPoolV4,
 
   // BLOCKS PARAMS
@@ -124,6 +120,7 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   // UNIVERSAL PARAMS
   ${JSON.stringify(whitelistTokens)},
   ${JSON.stringify(stableCoins)},
+  "${wrappedNative}",
   "${minimumUSDThresholdNewPairs}",
   "${minimumLiquidityThresholdETH}",
   "${minimumLiquidityETH}",
@@ -132,20 +129,17 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
 
   "${ammv2Name}",
   "${factoryV2}",
-  "${wrappedNativeV2}",
   "${wrappedNativeUSDCPoolV2}",
   "${stableCoin}",
   
   "${ammv3Name}",
   "${factoryV3}",
   "${nftPositionManagerV3}",
-  "${wrappedNativeV3}",
   "${wrappedNativeUSDCPoolV3}",
 
   "${ammv4Name}",
   "${factoryV4}",
   "${nftPositionManagerV4}",
-  "${wrappedNativeV4}",
   "${wrappedNativeUSDCPoolV4}",
 
   "${incentivesName}",

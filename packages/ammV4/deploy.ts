@@ -17,7 +17,7 @@ let ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 if (TARGET_CHAIN.factoryV4 === ZERO_ADDRESS) throw new Error(`AMM V4: missing factory contract for ${TARGET_CHAIN.network}`)
 if (TARGET_CHAIN.nftPositionManagerV4 === ZERO_ADDRESS) throw new Error(`AMM V4: missing NFT position manager contract for ${TARGET_CHAIN.network}`)
-if (TARGET_CHAIN.wrappedNativeV4 === ZERO_ADDRESS) throw new Error(`AMM V4: missing wrapped native contract for ${TARGET_CHAIN.network}`)
+if (TARGET_CHAIN.wrappedNative === ZERO_ADDRESS) throw new Error(`AMM V4: missing wrapped native contract for ${TARGET_CHAIN.network}`)
 if (TARGET_CHAIN.wrappedNativeUSDCPoolV4 === ZERO_ADDRESS) throw new Error(`AMM V4: missing wrapped native USDC pool contract for ${TARGET_CHAIN.network}`)
 if (TARGET_CHAIN.stableCoins.length === 0) throw new Error(`AMM V4: missing stablecoin contract for ${TARGET_CHAIN.network}`)
 

@@ -5,7 +5,7 @@ import { TARGET_CHAIN } from 'common'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const FACTORY_ADDRESS = TARGET_CHAIN.factoryV4
-export const WRAPPED_NATIVE = TARGET_CHAIN.wrappedNativeV4
+export const WRAPPED_NATIVE = TARGET_CHAIN.wrappedNative
 export const USDC_WMatic_03_POOL = TARGET_CHAIN.wrappedNativeUSDCPoolV4
 export const MINIMUM_Matic_LOCKED = TARGET_CHAIN.minimumLiquidityThresholdETH
 export const WHITELIST_TOKENS = TARGET_CHAIN.whitelistTokens
