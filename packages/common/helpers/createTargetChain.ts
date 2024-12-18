@@ -35,24 +35,24 @@ const apiVersion = subgraphConfig?.apiVersion
 
 // AMM V2 PARAMS
 const ammv2Name = config?.subgraphs.ammV2.name
-const factoryV2 = config?.contracts.factoryV2.toLowerCase()
+const factoryV2 = config?.contracts.factoryV2?.toLowerCase()
 const wrappedNativeV2 = config?.assets.native.address.toLowerCase()
-const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2.toLowerCase()
+const wrappedNativeUSDCPoolV2 = config?.assets.nativePairV2?.toLowerCase()
 const stableCoin = config?.assets.stable.toLowerCase()
 
 // AMM V3 PARAMS
 const ammv3Name = config?.subgraphs.ammV3.name
-const factoryV3 = config?.contracts.factoryV3.toLowerCase()
-const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3.toLowerCase()
+const factoryV3 = config?.contracts.factoryV3?.toLowerCase()
+const nftPositionManagerV3 = config?.contracts.nftPositionManagerV3?.toLowerCase()
 const wrappedNativeV3 = config?.assets.native.address.toLowerCase()
-const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3.toLowerCase()
+const wrappedNativeUSDCPoolV3 = config?.assets.nativePairV3?.toLowerCase()
 
 // AMM V4 PARAMS
 const ammv4Name = config?.subgraphs.ammV4.name
-const factoryV4 = config?.contracts.factoryV4.toLowerCase()
-const nftPositionManagerV4 = config?.contracts.nftPositionManagerV4.toLowerCase()
+const factoryV4 = config?.contracts.factoryV4?.toLowerCase()
+const nftPositionManagerV4 = config?.contracts.nftPositionManagerV4?.toLowerCase()
 const wrappedNativeV4 = config?.assets.native.address.toLowerCase()
-const wrappedNativeUSDCPoolV4 = config?.assets.nativePairV4.toLowerCase()
+const wrappedNativeUSDCPoolV4 = config?.assets.nativePairV4?.toLowerCase()
 
 // INCENTIVES PARAMS
 const incentivesName = config?.subgraphs.incentives.name
