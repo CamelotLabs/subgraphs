@@ -164,7 +164,7 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
 
   // recalculatePosition(position)
 
-
+  position.lastUpdatedAtBlock = event.block.number
   position.save()
 
   savePositionSnapshot(position, event)
@@ -205,6 +205,7 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   position = updateFeeVars(position, event, event.params.tokenId)
   // recalculatePosition(position)
 
+  position.lastUpdatedAtBlock = event.block.number
   position.save()
 
   savePositionSnapshot(position, event)
@@ -263,6 +264,7 @@ export function handleCollect(event: Collect): void {
 
   // recalculatePositi5on(position)
 
+  position.lastUpdatedAtBlock = event.block.number
   position.save()
   poolUser.save()
 
@@ -280,6 +282,8 @@ export function handleTransfer(event: Transfer): void {
 
   let owner = getUser(event.params.to)
   position.owner = owner.id
+
+  position.lastUpdatedAtBlock = event.block.number
   position.save()
 
   savePositionSnapshot(position, event)

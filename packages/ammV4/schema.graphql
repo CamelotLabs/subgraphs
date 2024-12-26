@@ -211,6 +211,7 @@ type PoolPosition @entity {
   uncollectedBurnedAmount1: BigDecimal!
   collectedFeesToken0: BigDecimal!
   collectedFeesToken1: BigDecimal!
+  lastUpdatedAtBlock: BigInt!
 }
 
 type Position @entity {
@@ -255,6 +256,9 @@ type Position @entity {
 
   token0Tvl: BigDecimal
   token1Tvl: BigDecimal
+
+  # block at which position was updated
+  lastUpdatedAtBlock: BigInt!
 }
 
 type PositionSnapshot @entity {
