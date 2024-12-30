@@ -96,13 +96,13 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   nftPositionManagerV4,
   wrappedNativeUSDCPoolV4,
 
-  // BLOCKS PARAMS
-  blocksName,
-
   // INCENTIVES PARAMS
   incentivesName,
   campaignFactory,
-  distributor
+  distributor,
+
+  // BLOCKS PARAMS
+  blocksName
 )
 
 const targetChainContent = `

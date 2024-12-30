@@ -70,13 +70,13 @@ class ChainInfo {
     nftPositionManagerV4: string,
     wrappedNativeUSDCPoolV4: string,
 
-    // BLOCKS PARAMS
-    blocksName: string,
-
     // INCENTIVES PARAMS
     incentivesName: string,
     campaignFactory: string,
-    distributor: string
+    distributor: string,
+
+    // BLOCKS PARAMS
+    blocksName: string,
   ) {
     // UNIVERSAL SELECTED CHAIN PARAM - USED FOR `network` IN `subgraph.yaml`
     this.network = network.toLowerCase()
