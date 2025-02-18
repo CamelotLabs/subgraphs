@@ -21,7 +21,7 @@ export function getEthPriceInUSD(): BigDecimal {
   let usdcPair = Pair.load(WRAPPED_NATIVE_USDC_POOL) // usdc is token0
 
   if (usdcPair !== null) {
-    return STABLE_COIN === usdcPair.token0 ? usdcPair.token0Price : usdcPair.token1Price
+    return STABLE_COIN == usdcPair.token0 ? usdcPair.token0Price : usdcPair.token1Price
   } else {
     return ZERO_BD
   }
