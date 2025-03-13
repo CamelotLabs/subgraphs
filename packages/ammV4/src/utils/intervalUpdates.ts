@@ -118,12 +118,12 @@ export function updateFeeHourData(event: ethereum.Event, Fee: BigInt): void{
     FeeHourDataEntity.fee = Fee
     FeeHourDataEntity.changesCount = ONE_BI
     FeeHourDataEntity.pool = event.address.toHexString()
-    if(Fee != ZERO_BI){
+    // if(Fee != ZERO_BI){
       FeeHourDataEntity.startFee = Fee
       FeeHourDataEntity.endFee = Fee
       FeeHourDataEntity.maxFee = Fee 
       FeeHourDataEntity.minFee = Fee 
-    }
+    // }
 
   }
   FeeHourDataEntity.save()
