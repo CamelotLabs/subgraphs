@@ -31,6 +31,8 @@ export function getPoolUser(pool: string, user: Bytes) : PoolUser {
     poolUser.collectedFeesUsd = ZERO_BD
     poolUser.collectedFeesToken0 = ZERO_BD
     poolUser.collectedFeesToken1 = ZERO_BD
+    poolUser.totalSwapVolumeUSD = ZERO_BD
+    poolUser.totalSwapFeesUSD = ZERO_BD
     poolUser.save()
   }
   return poolUser

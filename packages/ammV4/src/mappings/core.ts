@@ -523,6 +523,14 @@ export function handleSwap(event: SwapEvent): void {
   token0.totalValueLockedUSD = token0.totalValueLocked.times(token0.derivedMatic).times(bundle.maticPriceUSD)
   token1.totalValueLockedUSD = token1.totalValueLocked.times(token1.derivedMatic).times(bundle.maticPriceUSD)
 
+  // Get or create pool user for the swap sender
+  let poolUser = getPoolUser(pool.id, event.params.sender)
+  
+  // Update pool user swap metrics
+  poolUser.totalSwapVolumeUSD = poolUser.totalSwapVolumeUSD.plus(amountTotalUSDTracked)
+  poolUser.totalSwapFeesUSD = poolUser.totalSwapFeesUSD.plus(feesUSD)
+  poolUser.save()
+
   // create Swap event
   let transaction = loadTransaction(event)
   let swap = new Swap(transaction.id.concatI32(pool.txCount.toI32()))
@@ -538,6 +546,8 @@ export function handleSwap(event: SwapEvent): void {
   swap.amount0 = amount0
   swap.amount1 = amount1
   swap.amountUSD = amountTotalUSDTracked
+  swap.feesUSD = feesUSD
+  swap.poolUser = poolUser.id
   swap.tick = BigInt.fromI32(event.params.tick as i32)
   swap.price = event.params.price
 

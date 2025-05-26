@@ -1,9 +1,9 @@
 /* eslint-disable prefer-const */
-import {BigInt, BigDecimal, Address, ethereum} from '@graphprotocol/graph-ts'
+import {BigInt, BigDecimal, Address, Bytes, ethereum} from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { ERC20SymbolBytes } from '../../generated/Factory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
-import { User, Bundle, Token, LiquidityPosition, LiquidityPositionSnapshot, Pair } from '../../generated/schema'
+import { User, Bundle, Token, LiquidityPosition, LiquidityPositionSnapshot, Pair, PairUser } from '../../generated/schema'
 import { TokenDefinition } from './tokenDefinition'
 import {
   ZERO_BI,  
@@ -174,6 +174,20 @@ export function createUser(address: Address): void {
     user.usdSwapped = ZERO_BD
     user.save()
   }
+}
+
+export function getPairUser(pair: string, user: string) : PairUser {
+  let id = Bytes.fromHexString(pair.concat(user))
+  let pairUser = PairUser.load(id)
+  if(pairUser === null) {
+    pairUser = new PairUser(id)
+    pairUser.user = user
+    pairUser.pair = pair
+    pairUser.totalSwapVolumeUSD = ZERO_BD
+    pairUser.totalSwapFeesUSD = ZERO_BD
+    pairUser.save()
+  }
+  return pairUser
 }
 
 export function createLiquiditySnapshot(position: LiquidityPosition, event: ethereum.Event): void {

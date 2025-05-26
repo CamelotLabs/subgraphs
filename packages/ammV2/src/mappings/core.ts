@@ -32,7 +32,8 @@ import {
   createUser,
   createLiquidityPosition,
   createLiquiditySnapshot,
-  exponentToBigInt
+  exponentToBigInt,
+  getPairUser
 } from './helpers'
 import {
   ADDRESS_ZERO,
@@ -556,11 +557,19 @@ export function handleSwap(event: Swap): void {
   uniswap.totalFeeETH = uniswap.totalFeeETH.plus(feeAmountETH)
   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
+  // Get or create pool user for the swap sender
+  let pairUser = getPairUser(pair.id, event.params.sender.toHexString())
+
+  // Update pool user swap metrics
+  pairUser.totalSwapVolumeUSD = pairUser.totalSwapVolumeUSD.plus(trackedAmountUSD)
+  pairUser.totalSwapFeesUSD = pairUser.totalSwapFeesUSD.plus(feeAmountUSD)
+  
   // save entities
   pair.save()
   token0.save()
   token1.save()
   uniswap.save()
+  pairUser.save()
 
   let transaction = Transaction.load(event.transaction.hash.toHexString())
   if (transaction === null) {
@@ -589,6 +598,9 @@ export function handleSwap(event: Swap): void {
   swap.to = event.params.to
   swap.from = event.transaction.from
   swap.logIndex = event.logIndex
+  swap.feesUSD = feeAmountUSD
+  swap.pairUser = pairUser.id
+
   // use the tracked amount if we have it
   swap.amountUSD = trackedAmountUSD === ZERO_BD ? derivedAmountUSD : trackedAmountUSD
   swap.save()

@@ -4,10 +4,10 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "set-config": "ts-node-esm -P ../../tsconfig.node.json writeSubgraphConfig.ts",
+    "set-config": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm writeSubgraphConfig.ts",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "ts-node-esm --experimental-specifier-resolution=node -P ../../tsconfig.node.json deploy.ts",
+    "deploy": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm deploy.ts",
     "deploy-hosted": "graph deploy --node https://api.thegraph.com/deploy/ --product hosted-service camelotlabs/camelot-amm",
     "create-local": "graph create --node http://localhost:8020/ camelot-amm-v2",
     "remove-local": "graph remove --node http://localhost:8020/ camelot-amm-v2",
