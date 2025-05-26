@@ -4,10 +4,10 @@
   "type": "module",
   "version": "0.1.0",
   "scripts": {
-    "set-config": "ts-node-esm -P ../../tsconfig.node.json writeSubgraphConfig.ts",
+    "set-config": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm writeSubgraphConfig.ts",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "ts-node-esm --experimental-specifier-resolution=node -P ../../tsconfig.node.json deploy.ts"
+    "deploy": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm deploy.ts"
   },
   "devDependencies": {
     "common": "workspace:*"
