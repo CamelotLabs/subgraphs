@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Bundle, Burn, Factory, Mint, Pool, Swap, Tick, PoolPosition, Plugin, Token, PoolFeeData } from '../types/schema'
 import { PluginConfig, Pool as PoolABI } from '../types/Factory/Pool'
-import { BigDecimal, BigInt, ethereum, log} from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 import {
   Burn as BurnEvent,
@@ -524,7 +524,8 @@ export function handleSwap(event: SwapEvent): void {
   token1.totalValueLockedUSD = token1.totalValueLocked.times(token1.derivedMatic).times(bundle.maticPriceUSD)
 
   // Get or create pool user for the swap sender
-  let poolUser = getPoolUser(pool.id, event.params.sender)
+  let user = getUser(event.transaction.from)
+  let poolUser = getPoolUser(pool.id, user.id)
   
   // Update pool user swap metrics
   poolUser.totalSwapVolumeUSD = poolUser.totalSwapVolumeUSD.plus(amountTotalUSDTracked)
