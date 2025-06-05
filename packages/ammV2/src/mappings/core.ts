@@ -558,7 +558,7 @@ export function handleSwap(event: Swap): void {
   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
   // Get or create pool user for the swap sender
-  let user = createUser(event.params.sender)
+  let user = createUser(event.transaction.from)
   let pairUser = getPairUser(pair.id, user.id)
 
   // Update pool user swap metrics
