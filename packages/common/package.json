@@ -5,13 +5,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "get-chain-config-dev": "mkdir -p generated && curl -s https://dev.api.camelot.exchange/v2/chains > generated/chainConfig.json",
-    "get-chain-config-prod": "mkdir -p generated && curl -s https://api.camelot.exchange/v2/chains > generated/chainConfig.json"
+    "get-chain-config": "dotenv -e ../../.env -- bash -c 'mkdir -p generated && curl -s \"$CHAINS_LIST_URL\" > generated/chainConfig.json'"
   },
   "exports": {
     "./*": "./*.ts"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv-cli": "^7.0.0"
+  }
 }
