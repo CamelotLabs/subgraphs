@@ -31,30 +31,25 @@ All individual build, codegen, etc commands can be run for individual subgraphs 
 
 1) Fetch chain list config:
 ```
-pnpm run get-config-common-dev 
-or
-pnpm run get-config-common-prod
+pnpm --filter common run get-chain-config
 ```
 2) Write the subgraph config to `packages/xxx/subgraph.yaml`:
 ```
-pnpm run set-config-<subgraph_name>
+pnpm --filter <package_name> run set-config
 ```
 3) Generate subgraph artifacts:
 ```
-pnpm run codegen-<subgraph_name>
+pnpm --filter <package_name> run codegen
 ```
 4) Build the subgraph:
 ```
-pnpm run build-<subgraph_name>
+pnpm --filter <package_name> run build
 ```
 5) Deploy the subgraph:
 ```
-pnpm run deploy-<subgraph_name>
+pnpm --filter <package_name> run deploy
 ```
-
-## Manual deployments
-
-Alternatively, you can also use manual commands inside every subrepo via the following:
+Note: deployments currently only work with Alchemy/Satsuma subgraphs infra. For TheGraph deployments, go from step 1) to 4) manually, then proceed with this command to deploy:
 ```
-pnpm --filter <package> exec graph deploy [...]
+pnpm --filter <package_name> exec npx graph <params>
 ```
