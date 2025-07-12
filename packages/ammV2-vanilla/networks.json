@@ -1,0 +1,14 @@
+{
+  "arbitrum-one": {
+    "Factory": {
+      "address": "0x6eccab422d763ac031210895c81787e87b43a652",
+      "startBlock": 35061163
+    }
+  },
+  "arbitrum-sepolia": {
+    "Factory": {
+      "address": "0x718326d7E3Fa04146c777F63F02FBAE2EFF74b47",
+      "startBlock": 172267330 
+    }
+  }
+}

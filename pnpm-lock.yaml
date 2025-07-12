@@ -46,6 +46,12 @@ importers:
         specifier: workspace:*
         version: link:../common
 
+  packages/ammV2-vanilla:
+    devDependencies:
+      common:
+        specifier: workspace:*
+        version: link:../common
+
   packages/ammV3:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
