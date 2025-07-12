@@ -20,8 +20,6 @@ dataSources:
         - Pair
         - Token
       abis:
-        - name: Factory
-          file: ./abis/camelotfactory.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20SymbolBytes
@@ -29,11 +27,9 @@ dataSources:
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
         - name: Pair
-          file: ./abis/camelotpair.json
+          file: ./abis/CypherPair.json
         - name: Factory
-          file: ./abis/camelotfactory.json
-        - name: PriceConsumer
-          file: ./abis/priceconsumer.json
+          file: ./abis/CypherFactory.json
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
@@ -53,16 +49,12 @@ templates:
         - Token
       abis:
         - name: Pair
-          file: ./abis/camelotpair.json
+          file: ./abis/CypherPair.json
         - name: Factory
-          file: ./abis/camelotfactory.json
-        - name: PriceConsumer
-          file: ./abis/priceconsumer.json
+          file: ./abis/CypherFactory.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256)
           handler: handleMint
-        - event: SetStableSwap(bool,bool)
-          handler: handleTypeSwitch
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: handleBurn
         - event: >-
@@ -73,5 +65,3 @@ templates:
           handler: handleTransfer
         - event: Sync(uint112,uint112)
           handler: handleSync
-        - event: FeePercentUpdated(uint16,uint16)
-          handler: handleFeePercentUpdated
