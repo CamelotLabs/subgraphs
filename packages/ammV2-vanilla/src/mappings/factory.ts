@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
-import {log} from '@graphprotocol/graph-ts'
-import { PairCreated } from '../../generated/Factory/Factory'
+import {BigDecimal, log} from '@graphprotocol/graph-ts'
+import { PairCreated, OwnerFeeShareUpdated } from '../../generated/Factory/Factory'
 import { Bundle, Pair, Token, UniswapFactory } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
 import {
@@ -12,7 +12,8 @@ import {
 import {
   FACTORY_ADDRESS,
   ZERO_BD,
-  ZERO_BI
+  ZERO_BI,
+  OWNER_DEFAULT_FEE_SHARE
 } from "./constants"
 
 let BLACKLISTED_PAIRS: string[] = [
@@ -33,6 +34,7 @@ export function handleNewPair(event: PairCreated): void {
     factory.totalFeeUSD = ZERO_BD
     factory.totalFeeETH = ZERO_BD
     factory.txCount = ZERO_BI
+    factory.ownerFeeShare = OWNER_DEFAULT_FEE_SHARE
 
     // create new bundle
     let bundle = new Bundle('1')
@@ -100,6 +102,7 @@ export function handleNewPair(event: PairCreated): void {
   pair.txCount = ZERO_BI
   pair.reserve0 = ZERO_BD
   pair.reserve1 = ZERO_BD
+  pair.fee = BigDecimal.fromString("0.5")
   pair.trackedReserveETH = ZERO_BD
   pair.reserveETH = ZERO_BD
   pair.reserveUSD = ZERO_BD
@@ -129,5 +132,15 @@ export function handleNewPair(event: PairCreated): void {
   token0.save()
   token1.save()
   pair.save()
+  factory.save()
+}
+
+export function handleOwnerFeeShareUpdated(event: OwnerFeeShareUpdated): void {
+  let factory = UniswapFactory.load(FACTORY_ADDRESS)
+  if (factory === null) {
+    return
+  }
+
+  factory.ownerFeeShare = BigDecimal.fromString(event.params.newOwnerFeeShare.toString()).div(BigDecimal.fromString('1000'))
   factory.save()
 }

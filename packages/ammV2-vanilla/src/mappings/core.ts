@@ -38,8 +38,8 @@ import {
   ONE_BI,
   ZERO_BD,
   BI_18,
-  BD_PAIR_DEFAULT_FEE_AMOUNT
 } from "./constants"
+import { FeeUpdated } from '../../generated/Factory/Pair'
 
 function isCompleteMint(mintId: string): boolean {
   const mint = MintEvent.load(mintId)
@@ -462,8 +462,8 @@ export function handleSwap(event: Swap): void {
   }
 
   // get total swap fee of derived USD and ETH for tracking
-  let feeAmountETH = (token1.derivedETH as BigDecimal).times(amount1In).times(BD_PAIR_DEFAULT_FEE_AMOUNT)
-      .plus((token0.derivedETH as BigDecimal).times(amount0In).times(BD_PAIR_DEFAULT_FEE_AMOUNT)).div(BigDecimal.fromString('100'))
+  let feeAmountETH = (token1.derivedETH as BigDecimal).times(amount1In).times(pair.fee)
+      .plus((token0.derivedETH as BigDecimal).times(amount0In).times(pair.fee)).div(BigDecimal.fromString('100'))
   let feeAmountUSD = feeAmountETH.times(bundle.ethPrice)
 
   // only accounts for volume through white listed tokens
@@ -609,3 +609,14 @@ export function handleSwap(event: Swap): void {
   )
   token1DayData.save()
 }
+
+export function handleFeeUpdated(event: FeeUpdated): void {
+  let pair = Pair.load(event.address.toHexString())
+  if (pair === null) {
+    return
+  }
+
+  pair.fee = BigDecimal.fromString(event.params.newFee.toString()).div(BigDecimal.fromString('1000'))
+  pair.save()
+}
+

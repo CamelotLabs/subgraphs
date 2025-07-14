@@ -5,6 +5,9 @@ type UniswapFactory @entity {
   # pair info
   pairCount: Int!
 
+  # owner fee share
+  ownerFeeShare: BigDecimal!
+
   # total volume
   totalVolumeUSD: BigDecimal!
   totalVolumeETH: BigDecimal!
@@ -68,6 +71,7 @@ type Pair @entity {
   reserve0: BigDecimal!
   reserve1: BigDecimal!
   totalSupply: BigDecimal!
+  fee: BigDecimal!
 
   # derived liquidity
   reserveETH: BigDecimal!
