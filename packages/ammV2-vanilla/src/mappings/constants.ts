@@ -17,7 +17,8 @@ let ONE_BI = BigInt.fromI32(1)
 let ZERO_BD = BigDecimal.fromString('0')
 let ONE_BD = BigDecimal.fromString('1')
 let BI_18 = BigInt.fromI32(18)
-let BD_PAIR_DEFAULT_FEE_AMOUNT = BigDecimal.fromString('0.3')
+let PAIR_DEFAULT_FEE = BigDecimal.fromString('0.5')
+let OWNER_DEFAULT_FEE_SHARE = BigDecimal.fromString('30')
 
 let factoryContract = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS))
 
@@ -34,7 +35,8 @@ export {
   ZERO_BD,
   ONE_BD,
   BI_18,
-  BD_PAIR_DEFAULT_FEE_AMOUNT,
+  PAIR_DEFAULT_FEE,
+  OWNER_DEFAULT_FEE_SHARE,
   factoryContract,
   UNTRACKED_PAIRS,
   WHITELIST,

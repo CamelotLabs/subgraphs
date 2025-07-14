@@ -15,6 +15,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldOwnerFeeShare",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newOwnerFeeShare",
+        "type": "uint256"
+      }
+    ],
+    "name": "OwnerFeeShareUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "token0",
@@ -41,6 +60,21 @@
     ],
     "name": "PairCreated",
     "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "OWNER_FEE_SHARE_MAX",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "constant": true,
@@ -161,6 +195,21 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "ownerFeeShare",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -185,6 +234,21 @@
       }
     ],
     "name": "setFeeToSetter",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newOwnerFeeShare",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOwnerFeeShare",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
