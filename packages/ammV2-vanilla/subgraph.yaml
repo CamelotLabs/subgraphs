@@ -1,6 +1,7 @@
 specVersion: 0.0.5
-description: Camelot is a decentralized protocol for automated token exchange on Arbitrum.
-repository: https://github.com/CamelotLabs/v2-subgraph
+description: >-
+  Cypher is a decentralized protocol for automated token exchange on Ethereum
+  Mainnet.
 schema:
   file: ./schema.graphql
 dataSources:
@@ -8,9 +9,9 @@ dataSources:
     name: Factory
     network: arbitrum-sepolia
     source:
-      address: '0x718326d7e3fa04146c777f63f02fbae2eff74b47'
+      address: '0xC43a282424C22a3aa0FBe60FE8AD59f6bD09A268'
       abi: Factory
-      startBlock: 167247442
+      startBlock: 173656507
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

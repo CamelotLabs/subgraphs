@@ -7,8 +7,8 @@
   },
   "arbitrum-sepolia": {
     "Factory": {
-      "address": "0x718326d7E3Fa04146c777F63F02FBAE2EFF74b47",
-      "startBlock": 172267330 
+      "address": "0xC43a282424C22a3aa0FBe60FE8AD59f6bD09A268",
+      "startBlock": 173656507
     }
   }
 }
