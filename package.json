@@ -7,6 +7,7 @@
   "main": "index.js",
   "scripts": {
     "deploy-ammv2": "pnpm --filter common run get-chain-config && pnpm --filter amm-v2 run set-config && pnpm --filter amm-v2 run codegen && pnpm --filter amm-v2 run build && pnpm --filter amm-v2 run deploy",
+    "deploy-ammv2-vanilla": "pnpm --filter common run get-chain-config && pnpm --filter amm-v2-vanilla run set-config && pnpm --filter amm-v2-vanilla run codegen && pnpm --filter amm-v2-vanilla run build && pnpm --filter amm-v2-vanilla run deploy",
     "deploy-ammv3": "pnpm --filter common run get-chain-config && pnpm --filter amm-v3 run set-config && pnpm --filter amm-v3 run codegen && pnpm --filter amm-v3 run build && pnpm --filter amm-v3 run deploy",
     "deploy-ammv4": "pnpm --filter common run get-chain-config && pnpm --filter amm-v4 run set-config && pnpm --filter amm-v4 run codegen && pnpm --filter amm-v4 run build && pnpm --filter amm-v4 run deploy",
     "deploy-blocks": "pnpm --filter common run get-chain-config && pnpm --filter blocks run set-config && pnpm --filter blocks run codegen && pnpm --filter blocks run build && pnpm --filter blocks run deploy",
