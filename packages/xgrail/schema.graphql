@@ -1,0 +1,43 @@
+type User @entity {
+  # User address
+  id: ID!
+  
+  # xGRAIL balance (not allocated)
+  xgrailBalance: BigDecimal!
+  
+  # Allocated balance (to usage contracts)
+  allocatedBalance: BigDecimal!
+
+  # Redemption balance
+  redemptionBalance: BigDecimal!
+  
+  # Total balance (xgrailBalance + allocatedBalance + redemptionBalance)
+  totalBalance: BigDecimal!
+  
+  # Block number of last update
+  lastUpdateBlock: BigInt!
+  
+  # Timestamp of last update
+  lastUpdateTimestamp: BigInt!
+}
+
+type GlobalStats @entity {
+  # Single entity with id "global"
+  id: ID!
+  
+  # Total xGRAIL supply
+  totalSupply: BigDecimal!
+  
+  # Total allocated xGRAIL
+  totalAllocated: BigDecimal!
+  
+  # Total xGRAIL currently in redemption
+  totalInRedemption: BigDecimal!
+  
+  # Number of unique holders
+  holdersCount: BigInt!
+  
+  # Last update
+  lastUpdateBlock: BigInt!
+  lastUpdateTimestamp: BigInt!
+}
