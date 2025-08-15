@@ -13,6 +13,7 @@ const ZERO_BD = BigDecimal.fromString('0')
 const ZERO_BI = BigInt.fromI32(0)
 const ONE_BI = BigInt.fromI32(1)
 const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
+const XGRAIL_CONTRACT = '0x3caae25ee616f2c8e13c74da0813402eae3f496b'
 
 function convertTokenToDecimal(tokenAmount: BigInt, decimals: BigInt): BigDecimal {
   if (decimals == ZERO_BI) {
@@ -73,11 +74,27 @@ export function handleTransfer(event: Transfer): void {
   let fromAddress = event.params.from.toHexString()
   let toAddress = event.params.to.toHexString()
   
+  // Skip internal transfers involving the xGRAIL contract (these are handled by specific event handlers)
+  // This prevents double-counting when redeem/cancel operations trigger both specific events and transfer events
+  if (fromAddress.toLowerCase() == XGRAIL_CONTRACT.toLowerCase() || toAddress.toLowerCase() == XGRAIL_CONTRACT.toLowerCase()) {
+    // Still update global stats for mints/burns
+    let stats = loadOrCreateGlobalStats()
+    if (fromAddress == ADDRESS_ZERO) {
+      stats.totalSupply = stats.totalSupply.plus(amount)
+    } else if (toAddress == ADDRESS_ZERO) {
+      stats.totalSupply = stats.totalSupply.minus(amount)
+    }
+    stats.lastUpdateBlock = event.block.number
+    stats.lastUpdateTimestamp = event.block.timestamp
+    stats.save()
+    return
+  }
+  
   // Handle from address (unless it's minting from zero address)
   if (fromAddress != ADDRESS_ZERO) {
     let fromUser = loadOrCreateUser(event.params.from)
     fromUser.xgrailBalance = fromUser.xgrailBalance.minus(amount)
-    fromUser.totalBalance = fromUser.xgrailBalance.plus(fromUser.allocatedBalance).plus(fromUser.redemptionBalance)
+    fromUser.totalBalance = fromUser.xgrailBalance.plus(fromUser.allocatedBalance)
     fromUser.lastUpdateBlock = event.block.number
     fromUser.lastUpdateTimestamp = event.block.timestamp
     fromUser.save()
@@ -100,21 +117,21 @@ export function handleTransfer(event: Transfer): void {
     
     toUser = loadOrCreateUser(event.params.to)
     toUser.xgrailBalance = toUser.xgrailBalance.plus(amount)
-    toUser.totalBalance = toUser.xgrailBalance.plus(toUser.allocatedBalance).plus(toUser.redemptionBalance)
+    toUser.totalBalance = toUser.xgrailBalance.plus(toUser.allocatedBalance)
     toUser.lastUpdateBlock = event.block.number
     toUser.lastUpdateTimestamp = event.block.timestamp
     toUser.save()
   }
   
-  // Update global stats
+  // Update global stats for external transfers only
   let stats = loadOrCreateGlobalStats()
   
-  // Update total supply for mints and burns
+  // Update total supply for mints and burns (external only, internal handled above)
   if (fromAddress == ADDRESS_ZERO) {
-    // Minting
+    // External minting
     stats.totalSupply = stats.totalSupply.plus(amount)
   } else if (toAddress == ADDRESS_ZERO) {
-    // Burning
+    // External burning  
     stats.totalSupply = stats.totalSupply.minus(amount)
   }
   
@@ -136,7 +153,8 @@ export function handleAllocate(event: Allocate): void {
   // Move from xgrail balance to allocated balance
   user.xgrailBalance = user.xgrailBalance.minus(amount)
   user.allocatedBalance = user.allocatedBalance.plus(amount)
-  // Total balance remains the same
+  // Total balance remains the same (both are included)
+  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance)
   user.lastUpdateBlock = event.block.number
   user.lastUpdateTimestamp = event.block.timestamp
   user.save()
@@ -163,7 +181,7 @@ export function handleDeallocate(event: Deallocate): void {
   // Move from allocated balance back to xgrail balance (minus fee)
   user.allocatedBalance = user.allocatedBalance.minus(amount)
   user.xgrailBalance = user.xgrailBalance.plus(amount.minus(fee))
-  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance).plus(user.redemptionBalance)
+  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance)
   user.lastUpdateBlock = event.block.number
   user.lastUpdateTimestamp = event.block.timestamp
   user.save()
@@ -195,7 +213,8 @@ export function handleRedeem(event: Redeem): void {
   // Move from xgrail balance to redemption balance
   user.xgrailBalance = user.xgrailBalance.minus(xGrailAmount)
   user.redemptionBalance = user.redemptionBalance.plus(xGrailAmount)
-  // Total balance remains the same since xGRAIL is still locked
+  // Update total balance (now excludes redemption balance)
+  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance)
   user.lastUpdateBlock = event.block.number
   user.lastUpdateTimestamp = event.block.timestamp
   user.save()
@@ -220,7 +239,7 @@ export function handleFinalizeRedeem(event: FinalizeRedeem): void {
   
   // Remove from redemption balance (xGRAIL is converted to GRAIL)
   user.redemptionBalance = user.redemptionBalance.minus(xGrailAmount)
-  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance).plus(user.redemptionBalance)
+  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance)
   user.lastUpdateBlock = event.block.number
   user.lastUpdateTimestamp = event.block.timestamp
   user.save()
@@ -253,7 +272,8 @@ export function handleCancelRedeem(event: CancelRedeem): void {
   // Move from redemption balance back to xgrail balance
   user.redemptionBalance = user.redemptionBalance.minus(xGrailAmount)
   user.xgrailBalance = user.xgrailBalance.plus(xGrailAmount)
-  // Total balance remains the same
+  // Update total balance (now excludes redemption balance)
+  user.totalBalance = user.xgrailBalance.plus(user.allocatedBalance)
   user.lastUpdateBlock = event.block.number
   user.lastUpdateTimestamp = event.block.timestamp
   user.save()
