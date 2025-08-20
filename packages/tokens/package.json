@@ -1,0 +1,20 @@
+{
+  "name": "tokens",
+  "license": "UNLICENSED",
+  "type": "module",
+  "version": "1.1.0",
+  "scripts": {
+    "set-config": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm writeSubgraphConfig.ts",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "TS_NODE_PROJECT=../../tsconfig.node.json node --loader ts-node/esm deploy.ts",
+    "deploy-hosted": "graph deploy --node https://api.thegraph.com/deploy/ --product hosted-service camelotlabs/tokens",
+    "create-local": "graph create --node http://localhost:8020/ tokens",
+    "remove-local": "graph remove --node http://localhost:8020/ tokens",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 tokens",
+    "test": "graph test"
+  },
+  "devDependencies": {
+    "common": "workspace:*"
+  }
+}

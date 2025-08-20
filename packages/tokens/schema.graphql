@@ -1,0 +1,160 @@
+type User @entity {
+  # user address
+  id: ID!
+
+  # oGRAIL balance
+  oGrailBalance: BigDecimal!
+
+  # xGRAIL balances
+  xGrailBalance: BigDecimal!
+  allocatedBalance: BigDecimal!
+  redemptionBalance: BigDecimal!
+  totalXGrailBalance: BigDecimal!
+
+  # exercise history tracking
+  allTimeExercisedLiquid: BigDecimal!
+  allTimeExercisedEscrow: BigDecimal!
+  allTimeEthPaid: BigDecimal!
+
+  # exercise transactions
+  exercises: [Exercise!] @derivedFrom(field: "user")
+
+  # timestamp of first interaction
+  createdAt: BigInt!
+  
+  # timestamp of last update
+  updatedAt: BigInt!
+}
+
+type Exercise @entity {
+  # transaction hash + log index
+  id: ID!
+
+  # user who exercised
+  user: User!
+
+  # recipient of the exercise
+  recipient: Bytes!
+
+  # amount of oGRAIL exercised
+  amount: BigDecimal!
+
+  # ETH payment amount
+  paymentAmount: BigDecimal!
+
+  # discount in basis points
+  discountInBps: BigInt!
+
+  # whether converted to xGRAIL
+  convert: Boolean!
+
+  # transaction details
+  transaction: Transaction!
+
+  # block timestamp
+  timestamp: BigInt!
+
+  # block number
+  blockNumber: BigInt!
+}
+
+type Transaction @entity {
+  # transaction hash
+  id: ID!
+
+  # block number
+  blockNumber: BigInt!
+  
+  # timestamp
+  timestamp: BigInt!
+  
+  # gas used
+  gasUsed: BigInt
+  
+  # gas price
+  gasPrice: BigInt
+}
+
+type Token @entity {
+  # token address
+  id: ID!
+
+  # token symbol
+  symbol: String!
+  
+  # token name
+  name: String!
+  
+  # token decimals
+  decimals: BigInt!
+  
+  # total supply
+  totalSupply: BigDecimal!
+  
+  # total holders count
+  holderCount: BigInt!
+}
+
+type TokenBalance @entity {
+  # user address + token address
+  id: ID!
+  
+  # token
+  token: Token!
+  
+  # user
+  user: User!
+  
+  # balance amount
+  amount: BigDecimal!
+  
+  # last updated
+  updatedAt: BigInt!
+}
+
+type TokenDayData @entity {
+  # token address + day id
+  id: ID!
+  
+  # unix timestamp for start of day
+  date: Int!
+  
+  # token
+  token: Token!
+  
+  # daily volume (in token units)
+  dailyVolumeToken: BigDecimal!
+  
+  # daily exercised amount
+  dailyExercisedAmount: BigDecimal!
+  
+  # daily ETH paid for exercises
+  dailyEthPaid: BigDecimal!
+  
+  # total supply at end of day
+  totalSupply: BigDecimal!
+  
+  # holder count at end of day
+  holderCount: BigInt!
+}
+
+type GlobalXGrailStats @entity {
+  # single entity with id "global"
+  id: ID!
+  
+  # total xGRAIL supply
+  totalSupply: BigDecimal!
+  
+  # total allocated xGRAIL
+  totalAllocated: BigDecimal!
+  
+  # total xGRAIL currently in redemption
+  totalInRedemption: BigDecimal!
+  
+  # number of unique xGRAIL holders
+  holdersCount: BigInt!
+  
+  # last update
+  lastUpdateBlock: BigInt!
+  lastUpdateTimestamp: BigInt!
+}

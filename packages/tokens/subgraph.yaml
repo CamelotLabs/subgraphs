@@ -1,0 +1,66 @@
+specVersion: 0.0.5
+description: oGRAIL and xGRAIL token tracking subgraph
+repository: https://github.com/CamelotLabs/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: OptionsToken
+    network: arbitrum-one
+    source:
+      address: '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+      abi: OptionsToken
+      startBlock: 35061163
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/optionsToken.ts
+      entities:
+        - User
+        - Exercise
+        - Token
+        - TokenBalance
+        - Transaction
+      abis:
+        - name: OptionsToken
+          file: ./abis/OptionsToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Exercise(indexed address,indexed address,uint256,uint256,uint256,bool)
+          handler: handleExercise
+  - kind: ethereum/contract
+    name: XGrailToken
+    network: arbitrum-one
+    source:
+      address: '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+      abi: XGrailToken
+      startBlock: 35061163
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/xGrailToken.ts
+      entities:
+        - User
+        - Token
+        - TokenBalance
+        - GlobalXGrailStats
+        - Transaction
+      abis:
+        - name: XGrailToken
+          file: ./abis/XGrailToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleXGrailTransfer
+        - event: Allocate(indexed address,indexed address,uint256)
+          handler: handleAllocate
+        - event: Deallocate(indexed address,indexed address,uint256,uint256)
+          handler: handleDeallocate
+        - event: Redeem(indexed address,uint256,uint256)
+          handler: handleRedeem
+        - event: FinalizeRedeem(indexed address,uint256,uint256)
+          handler: handleFinalizeRedeem
+        - event: CancelRedeem(indexed address,uint256,uint256)
+          handler: handleCancelRedeem

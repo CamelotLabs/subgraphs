@@ -1,0 +1,153 @@
+import { Transfer as TransferEvent, Exercise as ExerciseEvent } from '../../generated/OptionsToken/OptionsToken'
+import { User, Exercise, Token, TokenBalance } from '../../generated/schema'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import {
+  ZERO_BI,
+  ONE_BI,
+  ZERO_BD,
+  convertTokenToDecimal,
+  loadOrCreateUser,
+  loadOrCreateToken,
+  loadOrCreateTokenBalance,
+  loadOrCreateTransaction,
+  updateTokenDayData
+} from './helpers'
+
+let OGRAIL_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+let OGRAIL_DECIMALS = BigInt.fromI32(18)
+let ETH_DECIMALS = BigInt.fromI32(18)
+
+export function handleTransfer(event: TransferEvent): void {
+  let timestamp = event.block.timestamp
+  let from = event.params.from
+  let to = event.params.to
+  let value = convertTokenToDecimal(event.params.value, OGRAIL_DECIMALS)
+  
+  // Load or create token
+  let token = loadOrCreateToken(
+    Address.fromString(OGRAIL_ADDRESS),
+    'oGRAIL',
+    'Option GRAIL',
+    OGRAIL_DECIMALS
+  )
+  
+  // Handle from user (sender)
+  if (from.toHex() != '0x0000000000000000000000000000000000000000') {
+    let fromUser = loadOrCreateUser(from, timestamp)
+    fromUser.oGrailBalance = fromUser.oGrailBalance.minus(value)
+    fromUser.updatedAt = timestamp
+    fromUser.save()
+    
+    // Update token balance for sender
+    let fromBalance = loadOrCreateTokenBalance(fromUser.id, token.id, timestamp)
+    fromBalance.amount = fromUser.oGrailBalance
+    fromBalance.updatedAt = timestamp
+    fromBalance.save()
+    
+    // Update holder count if balance reaches zero
+    if (fromUser.oGrailBalance.equals(ZERO_BD)) {
+      token.holderCount = token.holderCount.minus(ONE_BI)
+    }
+  } else {
+    // Minting - increase total supply
+    token.totalSupply = token.totalSupply.plus(value)
+  }
+  
+  // Handle to user (receiver)
+  if (to.toHex() != '0x0000000000000000000000000000000000000000') {
+    let toUser = loadOrCreateUser(to, timestamp)
+    let previousBalance = toUser.oGrailBalance
+    toUser.oGrailBalance = toUser.oGrailBalance.plus(value)
+    toUser.updatedAt = timestamp
+    toUser.save()
+    
+    // Update token balance for receiver
+    let toBalance = loadOrCreateTokenBalance(toUser.id, token.id, timestamp)
+    toBalance.amount = toUser.oGrailBalance
+    toBalance.updatedAt = timestamp
+    toBalance.save()
+    
+    // Update holder count if this is first token
+    if (previousBalance.equals(ZERO_BD) && !toUser.oGrailBalance.equals(ZERO_BD)) {
+      token.holderCount = token.holderCount.plus(ONE_BI)
+    }
+  } else {
+    // Burning - decrease total supply
+    token.totalSupply = token.totalSupply.minus(value)
+  }
+  
+  token.save()
+  
+  // Update day data
+  updateTokenDayData(
+    token.id,
+    timestamp,
+    value,
+    ZERO_BD,
+    ZERO_BD
+  )
+}
+
+export function handleExercise(event: ExerciseEvent): void {
+  let timestamp = event.block.timestamp
+  let blockNumber = event.block.number
+  let txHash = event.transaction.hash
+  let logIndex = event.logIndex
+  
+  // Create unique ID for this exercise event
+  let exerciseId = txHash.toHex() + '-' + logIndex.toString()
+  
+  // Load or create user
+  let user = loadOrCreateUser(event.params.sender, timestamp)
+  
+  // Convert amounts to decimal
+  let amount = convertTokenToDecimal(event.params.amount, OGRAIL_DECIMALS)
+  let paymentAmount = convertTokenToDecimal(event.params.paymentAmount, ETH_DECIMALS)
+  
+  // Update user exercise statistics
+  if (event.params.convert) {
+    // If converted to xGRAIL (escrowed)
+    user.allTimeExercisedEscrow = user.allTimeExercisedEscrow.plus(amount)
+  } else {
+    // If received as liquid GRAIL
+    user.allTimeExercisedLiquid = user.allTimeExercisedLiquid.plus(amount)
+  }
+  user.allTimeEthPaid = user.allTimeEthPaid.plus(paymentAmount)
+  user.updatedAt = timestamp
+  user.save()
+  
+  // Create transaction entity
+  let transaction = loadOrCreateTransaction(txHash, blockNumber, timestamp)
+  
+  // Create exercise entity
+  let exercise = new Exercise(exerciseId)
+  exercise.user = user.id
+  exercise.recipient = event.params.recipient
+  exercise.amount = amount
+  exercise.paymentAmount = paymentAmount
+  exercise.discountInBps = event.params.discountInBps
+  exercise.convert = event.params.convert
+  exercise.transaction = transaction.id
+  exercise.timestamp = timestamp
+  exercise.blockNumber = blockNumber
+  exercise.save()
+  
+  // Update token day data
+  let token = Token.load(OGRAIL_ADDRESS)
+  if (token !== null) {
+    updateTokenDayData(
+      token.id,
+      timestamp,
+      amount,
+      amount,
+      paymentAmount
+    )
+  }
+  
+  log.info('Exercise processed: user={}, amount={}, ethPaid={}, convert={}', [
+    user.id,
+    amount.toString(),
+    paymentAmount.toString(),
+    event.params.convert.toString()
+  ])
+}
