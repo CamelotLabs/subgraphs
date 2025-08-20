@@ -5,7 +5,8 @@ import {
   Deallocate,
   Redeem,
   FinalizeRedeem,
-  CancelRedeem
+  CancelRedeem,
+  xGrailToken
 } from '../../generated/xGrailToken/xGrailToken'
 import { User, GlobalStats } from '../../generated/schema'
 
@@ -14,6 +15,16 @@ const ZERO_BI = BigInt.fromI32(0)
 const ONE_BI = BigInt.fromI32(1)
 const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 const XGRAIL_CONTRACT = '0x3caae25ee616f2c8e13c74da0813402eae3f496b'
+
+function updateTotalSupply(stats: GlobalStats): void {
+  // Get actual totalSupply from the contract
+  let contract = xGrailToken.bind(Address.fromString(XGRAIL_CONTRACT))
+  let totalSupplyCall = contract.try_totalSupply()
+  
+  if (!totalSupplyCall.reverted) {
+    stats.totalSupply = convertTokenToDecimal(totalSupplyCall.value, BigInt.fromI32(18))
+  }
+}
 
 function convertTokenToDecimal(tokenAmount: BigInt, decimals: BigInt): BigDecimal {
   if (decimals == ZERO_BI) {
@@ -44,6 +55,7 @@ function loadOrCreateUser(address: Address): User {
     // Increment holder count
     let stats = loadOrCreateGlobalStats()
     stats.holdersCount = stats.holdersCount.plus(ONE_BI)
+    updateTotalSupply(stats)
     stats.save()
   }
   return user as User
@@ -77,16 +89,6 @@ export function handleTransfer(event: Transfer): void {
   // Skip internal transfers involving the xGRAIL contract (these are handled by specific event handlers)
   // This prevents double-counting when redeem/cancel operations trigger both specific events and transfer events
   if (fromAddress.toLowerCase() == XGRAIL_CONTRACT.toLowerCase() || toAddress.toLowerCase() == XGRAIL_CONTRACT.toLowerCase()) {
-    // Still update global stats for mints/burns
-    let stats = loadOrCreateGlobalStats()
-    if (fromAddress == ADDRESS_ZERO) {
-      stats.totalSupply = stats.totalSupply.plus(amount)
-    } else if (toAddress == ADDRESS_ZERO) {
-      stats.totalSupply = stats.totalSupply.minus(amount)
-    }
-    stats.lastUpdateBlock = event.block.number
-    stats.lastUpdateTimestamp = event.block.timestamp
-    stats.save()
     return
   }
   
@@ -103,6 +105,7 @@ export function handleTransfer(event: Transfer): void {
     if (fromUser.totalBalance.equals(ZERO_BD)) {
       let stats = loadOrCreateGlobalStats()
       stats.holdersCount = stats.holdersCount.minus(ONE_BI)
+      updateTotalSupply(stats)
       stats.save()
     }
   }
@@ -123,18 +126,9 @@ export function handleTransfer(event: Transfer): void {
     toUser.save()
   }
   
-  // Update global stats for external transfers only
+  // Update global stats for external transfers
   let stats = loadOrCreateGlobalStats()
-  
-  // Update total supply for mints and burns (external only, internal handled above)
-  if (fromAddress == ADDRESS_ZERO) {
-    // External minting
-    stats.totalSupply = stats.totalSupply.plus(amount)
-  } else if (toAddress == ADDRESS_ZERO) {
-    // External burning  
-    stats.totalSupply = stats.totalSupply.minus(amount)
-  }
-  
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
@@ -162,6 +156,7 @@ export function handleAllocate(event: Allocate): void {
   // Update global stats
   let stats = loadOrCreateGlobalStats()
   stats.totalAllocated = stats.totalAllocated.plus(amount)
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
@@ -189,12 +184,7 @@ export function handleDeallocate(event: Deallocate): void {
   // Update global stats
   let stats = loadOrCreateGlobalStats()
   stats.totalAllocated = stats.totalAllocated.minus(amount)
-  
-  // Fee is burned, so reduce total supply
-  if (fee.gt(ZERO_BD)) {
-    stats.totalSupply = stats.totalSupply.minus(fee)
-  }
-  
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
@@ -222,6 +212,7 @@ export function handleRedeem(event: Redeem): void {
   // Update global stats
   let stats = loadOrCreateGlobalStats()
   stats.totalInRedemption = stats.totalInRedemption.plus(xGrailAmount)
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
@@ -246,8 +237,8 @@ export function handleFinalizeRedeem(event: FinalizeRedeem): void {
   
   // Update global stats - xGRAIL is burned
   let stats = loadOrCreateGlobalStats()
-  stats.totalSupply = stats.totalSupply.minus(xGrailAmount)
   stats.totalInRedemption = stats.totalInRedemption.minus(xGrailAmount)
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
@@ -255,6 +246,7 @@ export function handleFinalizeRedeem(event: FinalizeRedeem): void {
   // Check if user has zero balance and decrement holder count
   if (user.totalBalance.equals(ZERO_BD)) {
     stats.holdersCount = stats.holdersCount.minus(ONE_BI)
+    updateTotalSupply(stats)
     stats.save()
   }
 }
@@ -281,6 +273,7 @@ export function handleCancelRedeem(event: CancelRedeem): void {
   // Update global stats
   let stats = loadOrCreateGlobalStats()
   stats.totalInRedemption = stats.totalInRedemption.minus(xGrailAmount)
+  updateTotalSupply(stats)
   stats.lastUpdateBlock = event.block.number
   stats.lastUpdateTimestamp = event.block.timestamp
   stats.save()
