@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, Bytes, Address } from '@graphprotocol/graph-ts'
-import { User, Token, TokenBalance, Transaction, TokenDayData, GlobalXGrailStats } from '../../generated/schema'
-import { XGrailToken } from '../../generated/XGrailToken/XGrailToken'
+import { User, Token, TokenBalance, Transaction, TokenDayData, GlobalEscrowStats } from '../../generated/schema'
+import { EscrowToken } from '../../generated/EscrowToken/EscrowToken'
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
@@ -27,10 +27,10 @@ export function loadOrCreateUser(address: Bytes, timestamp: BigInt): User {
   if (user === null) {
     user = new User(address.toHex())
     user.oGrailBalance = ZERO_BD
-    user.xGrailBalance = ZERO_BD
+    user.escrowBalance = ZERO_BD
     user.allocatedBalance = ZERO_BD
     user.redemptionBalance = ZERO_BD
-    user.totalXGrailBalance = ZERO_BD
+    user.totalEscrowBalance = ZERO_BD
     user.allTimeExercisedLiquid = ZERO_BD
     user.allTimeExercisedEscrow = ZERO_BD
     user.allTimeEthPaid = ZERO_BD
@@ -39,7 +39,7 @@ export function loadOrCreateUser(address: Bytes, timestamp: BigInt): User {
     user.save()
     
     // Increment holder count for new user
-    let stats = loadOrCreateGlobalXGrailStats()
+    let stats = loadOrCreateGlobalEscrowStats()
     stats.holdersCount = stats.holdersCount.plus(ONE_BI)
     stats.save()
   }
@@ -122,10 +122,10 @@ export function updateTokenDayData(
   return tokenDayData as TokenDayData
 }
 
-export function loadOrCreateGlobalXGrailStats(): GlobalXGrailStats {
-  let stats = GlobalXGrailStats.load('global')
+export function loadOrCreateGlobalEscrowStats(): GlobalEscrowStats {
+  let stats = GlobalEscrowStats.load('global')
   if (stats === null) {
-    stats = new GlobalXGrailStats('global')
+    stats = new GlobalEscrowStats('global')
     stats.totalSupply = ZERO_BD
     stats.totalAllocated = ZERO_BD
     stats.totalInRedemption = ZERO_BD
@@ -133,13 +133,13 @@ export function loadOrCreateGlobalXGrailStats(): GlobalXGrailStats {
     stats.lastUpdateBlock = ZERO_BI
     stats.lastUpdateTimestamp = ZERO_BI
   }
-  return stats as GlobalXGrailStats
+  return stats as GlobalEscrowStats
 }
 
-export function updateXGrailTotalSupply(stats: GlobalXGrailStats): void {
+export function updateEscrowTotalSupply(stats: GlobalEscrowStats): void {
   // Get actual totalSupply from the contract
-  let XGRAIL_CONTRACT = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
-  let contract = XGrailToken.bind(Address.fromString(XGRAIL_CONTRACT))
+  let ESCROW_CONTRACT = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+  let contract = EscrowToken.bind(Address.fromString(ESCROW_CONTRACT))
   let totalSupplyCall = contract.try_totalSupply()
   
   if (!totalSupplyCall.reverted) {

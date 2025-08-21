@@ -6,19 +6,6 @@
     },
     {
         "type": "function",
-        "name": "DOMAIN_SEPARATOR",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "bytes32",
-                "internalType": "bytes32"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
         "name": "MAX_DEALLOCATION_FEE",
         "inputs": [],
         "outputs": [
@@ -152,12 +139,17 @@
             {
                 "name": "usage",
                 "type": "address",
-                "internalType": "contract IXGrailTokenUsage"
+                "internalType": "contract IEscrowTokenUsage"
             },
             {
                 "name": "amount",
                 "type": "uint256",
                 "internalType": "uint256"
+            },
+            {
+                "name": "add",
+                "type": "bool",
+                "internalType": "bool"
             }
         ],
         "outputs": [],
@@ -313,49 +305,6 @@
     },
     {
         "type": "function",
-        "name": "eip712Domain",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "fields",
-                "type": "bytes1",
-                "internalType": "bytes1"
-            },
-            {
-                "name": "name",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "version",
-                "type": "string",
-                "internalType": "string"
-            },
-            {
-                "name": "chainId",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "verifyingContract",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "salt",
-                "type": "bytes32",
-                "internalType": "bytes32"
-            },
-            {
-                "name": "extensions",
-                "type": "uint256[]",
-                "internalType": "uint256[]"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
         "name": "finalizeRedeem",
         "inputs": [
             {
@@ -369,13 +318,37 @@
     },
     {
         "type": "function",
-        "name": "getGrailToken",
+        "name": "getEscrowBalance",
+        "inputs": [
+            {
+                "name": "userAddress",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "allocatedAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "redeemingAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getMainToken",
         "inputs": [],
         "outputs": [
             {
                 "name": "",
                 "type": "address",
-                "internalType": "contract IGrailToken"
+                "internalType": "contract IMainToken"
             }
         ],
         "stateMutability": "view"
@@ -464,7 +437,7 @@
         ],
         "outputs": [
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "internalType": "uint256"
             },
@@ -502,46 +475,32 @@
     },
     {
         "type": "function",
-        "name": "getXGrailBalance",
-        "inputs": [
-            {
-                "name": "userAddress",
-                "type": "address",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "allocatedAmount",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "redeemingAmount",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
         "name": "initialize",
         "inputs": [
             {
                 "name": "params",
                 "type": "tuple",
-                "internalType": "struct IXGrailToken.XGrailTokenInitParams",
+                "internalType": "struct IEscrowToken.EscrowTokenInitParams",
                 "components": [
                     {
-                        "name": "_grailToken",
+                        "name": "_mainToken",
                         "type": "address",
-                        "internalType": "contract IGrailToken"
+                        "internalType": "contract IMainToken"
                     },
                     {
                         "name": "_owner",
                         "type": "address",
                         "internalType": "address"
+                    },
+                    {
+                        "name": "_name",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "_symbol",
+                        "type": "string",
+                        "internalType": "string"
                     }
                 ]
             }
@@ -602,25 +561,6 @@
     },
     {
         "type": "function",
-        "name": "nonces",
-        "inputs": [
-            {
-                "name": "owner",
-                "type": "address",
-                "internalType": "address"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ],
-        "stateMutability": "view"
-    },
-    {
-        "type": "function",
         "name": "owner",
         "inputs": [],
         "outputs": [
@@ -631,49 +571,6 @@
             }
         ],
         "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "permit",
-        "inputs": [
-            {
-                "name": "owner",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "spender",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "value",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-            },
-            {
-                "name": "v",
-                "type": "uint8",
-                "internalType": "uint8"
-            },
-            {
-                "name": "r",
-                "type": "bytes32",
-                "internalType": "bytes32"
-            },
-            {
-                "name": "s",
-                "type": "bytes32",
-                "internalType": "bytes32"
-            }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
     },
     {
         "type": "function",
@@ -693,7 +590,7 @@
         "name": "redeem",
         "inputs": [
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "internalType": "uint256"
             },
@@ -711,7 +608,7 @@
         "name": "redeem",
         "inputs": [
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "internalType": "uint256"
             }
@@ -1025,6 +922,12 @@
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
+            },
+            {
+                "name": "add",
+                "type": "bool",
+                "indexed": false,
+                "internalType": "bool"
             }
         ],
         "anonymous": false
@@ -1040,7 +943,7 @@
                 "internalType": "address"
             },
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
@@ -1112,12 +1015,6 @@
     },
     {
         "type": "event",
-        "name": "EIP712DomainChanged",
-        "inputs": [],
-        "anonymous": false
-    },
-    {
-        "type": "event",
         "name": "FinalizeRedeem",
         "inputs": [
             {
@@ -1127,7 +1024,7 @@
                 "internalType": "address"
             },
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
@@ -1184,7 +1081,7 @@
                 "internalType": "address"
             },
             {
-                "name": "xGrailAmount",
+                "name": "escrowAmount",
                 "type": "uint256",
                 "indexed": false,
                 "internalType": "uint256"
@@ -1306,6 +1203,11 @@
     },
     {
         "type": "error",
+        "name": "AddressZero",
+        "inputs": []
+    },
+    {
+        "type": "error",
         "name": "AllocateAmountZero",
         "inputs": []
     },
@@ -1316,12 +1218,12 @@
     },
     {
         "type": "error",
-        "name": "CannotRemoveXGrailFromRedeemWhitelist",
+        "name": "CannotRemoveEscrowFromRedeemWhitelist",
         "inputs": []
     },
     {
         "type": "error",
-        "name": "CannotRemoveXGrailFromTransferWhitelist",
+        "name": "CannotRemoveEscrowFromTransferWhitelist",
         "inputs": []
     },
     {
@@ -1343,33 +1245,6 @@
         "type": "error",
         "name": "DeallocationFeeTooHigh",
         "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "ECDSAInvalidSignature",
-        "inputs": []
-    },
-    {
-        "type": "error",
-        "name": "ECDSAInvalidSignatureLength",
-        "inputs": [
-            {
-                "name": "length",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ECDSAInvalidSignatureS",
-        "inputs": [
-            {
-                "name": "s",
-                "type": "bytes32",
-                "internalType": "bytes32"
-            }
-        ]
     },
     {
         "type": "error",
@@ -1475,33 +1350,6 @@
     },
     {
         "type": "error",
-        "name": "ERC2612ExpiredSignature",
-        "inputs": [
-            {
-                "name": "deadline",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ]
-    },
-    {
-        "type": "error",
-        "name": "ERC2612InvalidSigner",
-        "inputs": [
-            {
-                "name": "signer",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "owner",
-                "type": "address",
-                "internalType": "address"
-            }
-        ]
-    },
-    {
-        "type": "error",
         "name": "FailedCall",
         "inputs": []
     },
@@ -1517,19 +1365,8 @@
     },
     {
         "type": "error",
-        "name": "InvalidAccountNonce",
-        "inputs": [
-            {
-                "name": "account",
-                "type": "address",
-                "internalType": "address"
-            },
-            {
-                "name": "currentNonce",
-                "type": "uint256",
-                "internalType": "uint256"
-            }
-        ]
+        "name": "InsufficientUsageApproval",
+        "inputs": []
     },
     {
         "type": "error",
