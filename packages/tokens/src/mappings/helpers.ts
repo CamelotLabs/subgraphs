@@ -26,7 +26,7 @@ export function loadOrCreateUser(address: Bytes, timestamp: BigInt): User {
   let user = User.load(address.toHex())
   if (user === null) {
     user = new User(address.toHex())
-    user.oGrailBalance = ZERO_BD
+    user.optionsBalance = ZERO_BD
     user.escrowBalance = ZERO_BD
     user.allocatedBalance = ZERO_BD
     user.redemptionBalance = ZERO_BD

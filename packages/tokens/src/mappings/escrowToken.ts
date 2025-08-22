@@ -176,7 +176,7 @@ export function handleDeallocate(event: DeallocateEvent): void {
   
   let user = loadOrCreateUser(event.params.userAddress, timestamp)
   
-  // Move from allocated balance back to xgrail balance (minus fee)
+  // Move from allocated balance back to escrow token balance (minus fee)
   user.allocatedBalance = user.allocatedBalance.minus(totalAmount)
   user.escrowBalance = user.escrowBalance.plus(amountReturned)
   user.totalEscrowBalance = user.escrowBalance.plus(user.allocatedBalance)

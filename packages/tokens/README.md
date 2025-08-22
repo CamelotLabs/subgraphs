@@ -1,30 +1,30 @@
 # Tokens Subgraph
 
-This subgraph indexes and tracks oGRAIL and xGRAIL token data on Arbitrum One, providing comprehensive analytics for user balances, exercises, allocations, and redemptions.
+This subgraph indexes and tracks options and escrow token data on Arbitrum One, providing comprehensive analytics for user balances, exercises, allocations, and redemptions.
 
 ## Overview
 
 The Tokens subgraph tracks:
-- **oGRAIL (Options GRAIL)**: Option token that can be exercised for GRAIL at a discount
-- **xGRAIL (Staked GRAIL)**: Non-transferable governance token with allocation and redemption mechanisms
+- **Options Token**: Option token that can be exercised for GRAIL at a discount
+- **Escrow Token**: Non-transferable governance token with allocation and redemption mechanisms
 
 ## Entities
 
 ### User
 Tracks individual user token interactions and balances:
-- `oGrailBalance`: Current oGRAIL balance
-- `xGrailBalance`: Available xGRAIL balance (not allocated)
-- `allocatedBalance`: xGRAIL allocated to usage contracts
-- `redemptionBalance`: xGRAIL currently being redeemed
-- `totalXGrailBalance`: Sum of xGRAIL + allocated balances (excludes redemption)
-- `allTimeExercisedLiquid`: Total oGRAIL exercised for liquid GRAIL
-- `allTimeExercisedEscrow`: Total oGRAIL exercised for xGRAIL (escrowed)
+- `optionsBalance`: Current options balance
+- `escrowBalance`: Available escrow balance (not allocated)
+- `allocatedBalance`: Escrow tokens allocated to usage contracts
+- `redemptionBalance`: Escrow tokens currently being redeemed
+- `totalEscrowBalance`: Sum of escrow + allocated balances (excludes redemption)
+- `allTimeExercisedLiquid`: Total options exercised for liquid GRAIL
+- `allTimeExercisedEscrow`: Total options exercised for escrow tokens
 - `allTimeEthPaid`: Total ETH paid for exercises
 
 ### Exercise
-Records individual oGRAIL exercise events:
+Records individual options exercise events:
 - Exercise amount, payment amount, and discount
-- Whether converted to xGRAIL or received as liquid GRAIL
+- Whether converted to escrow tokens or received as liquid GRAIL
 - Transaction details and timestamps
 
 ### Token
@@ -43,19 +43,19 @@ Daily aggregated metrics:
 - Daily ETH paid for exercises
 - End-of-day supply and holder counts
 
-### GlobalXGrailStats
-Protocol-wide xGRAIL metrics:
-- Total xGRAIL supply
+### GlobalEscrowStats
+Protocol-wide escrow token metrics:
+- Total escrow token supply
 - Total allocated and in redemption
 - Unique holder count
 
 ## Events Tracked
 
-### oGRAIL (OptionsToken)
+### Options Token
 - `Transfer`: Balance updates
 - `Exercise`: Option exercises with ETH payment tracking
 
-### xGRAIL (XGrailToken)
+### Escrow Token
 - `Transfer`: Balance updates
 - `Allocate`: Allocations to usage contracts
 - `Deallocate`: Deallocations with fee tracking
@@ -66,7 +66,7 @@ Protocol-wide xGRAIL metrics:
 ## Key Features
 
 ### Balance Tracking
-- Real-time tracking of oGRAIL and xGRAIL balances
+- Real-time tracking of options and escrow token balances
 - Separate tracking for allocated and redemption balances
 - Historical balance snapshots through day data
 
@@ -75,7 +75,7 @@ Protocol-wide xGRAIL metrics:
 - ETH payment tracking for discount calculations
 - Individual exercise history per user
 
-### xGRAIL State Management
+### Escrow Token State Management
 - Allocation tracking to usage contracts
 - Redemption lifecycle (pending → finalized/cancelled)
 - Fee tracking on deallocations
@@ -83,7 +83,7 @@ Protocol-wide xGRAIL metrics:
 ### Global Metrics
 - Protocol-wide supply and holder statistics
 - Daily aggregations for trend analysis
-- Separate metrics for oGRAIL and xGRAIL
+- Separate metrics for options and escrow tokens
 
 ## Deployment
 
@@ -121,11 +121,11 @@ graph deploy --product subgraph-studio <SUBGRAPH_NAME>
 ```graphql
 query UserBalances($user: ID!) {
   user(id: $user) {
-    oGrailBalance
-    xGrailBalance
+    optionsBalance
+    escrowBalance
     allocatedBalance
     redemptionBalance
-    totalXGrailBalance
+    totalEscrowBalance
     allTimeExercisedLiquid
     allTimeExercisedEscrow
     allTimeEthPaid
@@ -149,10 +149,10 @@ query RecentExercises {
 }
 ```
 
-### Get global xGRAIL stats
+### Get global escrow stats
 ```graphql
 query GlobalStats {
-  globalXGrailStats(id: "global") {
+  globalEscrowStats(id: "global") {
     totalSupply
     totalAllocated
     totalInRedemption
@@ -179,12 +179,6 @@ query DailyMetrics($token: ID!, $days: Int!) {
   }
 }
 ```
-
-## Contract Addresses (Arbitrum One)
-
-- oGRAIL: `0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b`
-- xGRAIL: `0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b`
-
 ## License
 
 MIT

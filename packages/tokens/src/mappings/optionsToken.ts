@@ -13,39 +13,39 @@ import {
   updateTokenDayData
 } from './helpers'
 
-let OGRAIL_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
-let OGRAIL_DECIMALS = BigInt.fromI32(18)
+let OPTIONS_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+let OPTIONS_DECIMALS = BigInt.fromI32(18)
 let ETH_DECIMALS = BigInt.fromI32(18)
 
 export function handleTransfer(event: TransferEvent): void {
   let timestamp = event.block.timestamp
   let from = event.params.from
   let to = event.params.to
-  let value = convertTokenToDecimal(event.params.value, OGRAIL_DECIMALS)
+  let value = convertTokenToDecimal(event.params.value, OPTIONS_DECIMALS)
   
   // Load or create token
   let token = loadOrCreateToken(
-    Address.fromString(OGRAIL_ADDRESS),
-    'oGRAIL',
-    'Option GRAIL',
-    OGRAIL_DECIMALS
+    Address.fromString(OPTIONS_ADDRESS),
+    'OPTIONS',
+    'Options Token',
+    OPTIONS_DECIMALS
   )
   
   // Handle from user (sender)
   if (from.toHex() != '0x0000000000000000000000000000000000000000') {
     let fromUser = loadOrCreateUser(from, timestamp)
-    fromUser.oGrailBalance = fromUser.oGrailBalance.minus(value)
+    fromUser.optionsBalance = fromUser.optionsBalance.minus(value)
     fromUser.updatedAt = timestamp
     fromUser.save()
     
     // Update token balance for sender
     let fromBalance = loadOrCreateTokenBalance(fromUser.id, token.id, timestamp)
-    fromBalance.amount = fromUser.oGrailBalance
+    fromBalance.amount = fromUser.optionsBalance
     fromBalance.updatedAt = timestamp
     fromBalance.save()
     
     // Update holder count if balance reaches zero
-    if (fromUser.oGrailBalance.equals(ZERO_BD)) {
+    if (fromUser.optionsBalance.equals(ZERO_BD)) {
       token.holderCount = token.holderCount.minus(ONE_BI)
     }
   } else {
@@ -56,19 +56,19 @@ export function handleTransfer(event: TransferEvent): void {
   // Handle to user (receiver)
   if (to.toHex() != '0x0000000000000000000000000000000000000000') {
     let toUser = loadOrCreateUser(to, timestamp)
-    let previousBalance = toUser.oGrailBalance
-    toUser.oGrailBalance = toUser.oGrailBalance.plus(value)
+    let previousBalance = toUser.optionsBalance
+    toUser.optionsBalance = toUser.optionsBalance.plus(value)
     toUser.updatedAt = timestamp
     toUser.save()
     
     // Update token balance for receiver
     let toBalance = loadOrCreateTokenBalance(toUser.id, token.id, timestamp)
-    toBalance.amount = toUser.oGrailBalance
+    toBalance.amount = toUser.optionsBalance
     toBalance.updatedAt = timestamp
     toBalance.save()
     
     // Update holder count if this is first token
-    if (previousBalance.equals(ZERO_BD) && !toUser.oGrailBalance.equals(ZERO_BD)) {
+    if (previousBalance.equals(ZERO_BD) && !toUser.optionsBalance.equals(ZERO_BD)) {
       token.holderCount = token.holderCount.plus(ONE_BI)
     }
   } else {
@@ -101,12 +101,12 @@ export function handleExercise(event: ExerciseEvent): void {
   let user = loadOrCreateUser(event.params.sender, timestamp)
   
   // Convert amounts to decimal
-  let amount = convertTokenToDecimal(event.params.amount, OGRAIL_DECIMALS)
+  let amount = convertTokenToDecimal(event.params.amount, OPTIONS_DECIMALS)
   let paymentAmount = convertTokenToDecimal(event.params.paymentAmount, ETH_DECIMALS)
   
   // Update user exercise statistics
   if (event.params.convert) {
-    // If converted to xGRAIL (escrowed)
+    // If converted to escrow token
     user.allTimeExercisedEscrow = user.allTimeExercisedEscrow.plus(amount)
   } else {
     // If received as liquid GRAIL
@@ -133,7 +133,7 @@ export function handleExercise(event: ExerciseEvent): void {
   exercise.save()
   
   // Update token day data
-  let token = Token.load(OGRAIL_ADDRESS)
+  let token = Token.load(OPTIONS_ADDRESS)
   if (token !== null) {
     updateTokenDayData(
       token.id,

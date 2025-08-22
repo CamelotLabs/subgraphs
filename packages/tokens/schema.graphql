@@ -2,8 +2,8 @@ type User @entity(immutable: false) {
   # user address
   id: ID!
 
-  # oGRAIL balance
-  oGrailBalance: BigDecimal!
+  # options balance
+  optionsBalance: BigDecimal!
 
   # Escrow token balances
   escrowBalance: BigDecimal!
@@ -36,7 +36,7 @@ type Exercise @entity(immutable: true) {
   # recipient of the exercise
   recipient: Bytes!
 
-  # amount of oGRAIL exercised
+  # amount of options token exercised
   amount: BigDecimal!
 
   # ETH payment amount
