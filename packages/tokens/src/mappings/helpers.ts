@@ -1,5 +1,5 @@
 import { BigDecimal, BigInt, Bytes, Address } from '@graphprotocol/graph-ts'
-import { User, Token, TokenBalance, Transaction, TokenDayData, GlobalEscrowStats } from '../../generated/schema'
+import { User, Token, TokenBalance, Transaction, TokenDayData, GlobalEscrowStats, GlobalOptionsStats } from '../../generated/schema'
 import { EscrowToken } from '../../generated/EscrowToken/EscrowToken'
 
 export let ZERO_BI = BigInt.fromI32(0)
@@ -134,6 +134,20 @@ export function loadOrCreateGlobalEscrowStats(): GlobalEscrowStats {
     stats.lastUpdateTimestamp = ZERO_BI
   }
   return stats as GlobalEscrowStats
+}
+
+export function loadOrCreateGlobalOptionsStats(): GlobalOptionsStats {
+  let stats = GlobalOptionsStats.load('global')
+  if (stats === null) {
+    stats = new GlobalOptionsStats('global')
+    stats.totalExercises = ZERO_BI
+    stats.totalXTokenConversions = ZERO_BI
+    stats.totalRegTokenConversions = ZERO_BI
+    stats.totalETHCollected = ZERO_BD
+    stats.lastUpdateBlock = ZERO_BI
+    stats.lastUpdateTimestamp = ZERO_BI
+  }
+  return stats as GlobalOptionsStats
 }
 
 export function updateEscrowTotalSupply(stats: GlobalEscrowStats): void {

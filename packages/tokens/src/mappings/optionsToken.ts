@@ -1,5 +1,5 @@
 import { Transfer as TransferEvent, Exercise as ExerciseEvent } from '../../generated/OptionsToken/OptionsToken'
-import { User, Exercise, Token, TokenBalance } from '../../generated/schema'
+import { User, Exercise, Token, TokenBalance, GlobalOptionsStats } from '../../generated/schema'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import {
   ZERO_BI,
@@ -10,7 +10,8 @@ import {
   loadOrCreateToken,
   loadOrCreateTokenBalance,
   loadOrCreateTransaction,
-  updateTokenDayData
+  updateTokenDayData,
+  loadOrCreateGlobalOptionsStats
 } from './helpers'
 
 let OPTIONS_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
@@ -115,6 +116,19 @@ export function handleExercise(event: ExerciseEvent): void {
   user.allTimeEthPaid = user.allTimeEthPaid.plus(paymentAmount)
   user.updatedAt = timestamp
   user.save()
+  
+  // Update global options statistics
+  let globalStats = loadOrCreateGlobalOptionsStats()
+  globalStats.totalExercises = globalStats.totalExercises.plus(ONE_BI)
+  if (event.params.convert) {
+    globalStats.totalXTokenConversions = globalStats.totalXTokenConversions.plus(ONE_BI)
+  } else {
+    globalStats.totalRegTokenConversions = globalStats.totalRegTokenConversions.plus(ONE_BI)
+  }
+  globalStats.totalETHCollected = globalStats.totalETHCollected.plus(paymentAmount)
+  globalStats.lastUpdateBlock = blockNumber
+  globalStats.lastUpdateTimestamp = timestamp
+  globalStats.save()
   
   // Create transaction entity
   let transaction = loadOrCreateTransaction(txHash, blockNumber, timestamp)

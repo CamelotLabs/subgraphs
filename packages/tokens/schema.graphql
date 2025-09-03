@@ -158,3 +158,24 @@ type GlobalEscrowStats @entity(immutable: false) {
   lastUpdateBlock: BigInt!
   lastUpdateTimestamp: BigInt!
 }
+
+type GlobalOptionsStats @entity(immutable: false) {
+  # single entity with id "global"
+  id: ID!
+  
+  # total number of exercises of all time
+  totalExercises: BigInt!
+  
+  # total exercises where convert = true (converted to xToken)
+  totalXTokenConversions: BigInt!
+  
+  # total exercises where convert = false (received regular tokens)
+  totalRegTokenConversions: BigInt!
+  
+  # sum of every paymentAmount in ETH for every exercise of all time
+  totalETHCollected: BigDecimal!
+  
+  # last update
+  lastUpdateBlock: BigInt!
+  lastUpdateTimestamp: BigInt!
+}

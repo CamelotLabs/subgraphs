@@ -8,9 +8,9 @@ dataSources:
     name: OptionsToken
     network: arbitrum-sepolia
     source:
-      address: '0xdd2756BCAe5eF65e60961794964709a08963aa0c'
+      address: '0xfe005f2ea9fb912c0de878ca32fac3f0df137cf0'
       abi: OptionsToken
-      startBlock: 172191552
+      startBlock: 190309657
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -36,7 +36,7 @@ dataSources:
     source:
       address: '0x73eb3EF15D30cC9C42AB002dE8F922C88473D97F'
       abi: EscrowToken
-      startBlock: 172191454
+      startBlock: 190309657
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
