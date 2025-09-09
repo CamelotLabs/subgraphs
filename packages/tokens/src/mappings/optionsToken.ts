@@ -123,7 +123,7 @@ export function handleExercise(event: ExerciseEvent): void {
   if (event.params.convert) {
     globalStats.totalXTokenConversions = globalStats.totalXTokenConversions.plus(ONE_BI)
   } else {
-    globalStats.totalRegTokenConversions = globalStats.totalRegTokenConversions.plus(ONE_BI)
+    globalStats.totalMainTokenConversions = globalStats.totalMainTokenConversions.plus(ONE_BI)
   }
   globalStats.totalETHCollected = globalStats.totalETHCollected.plus(paymentAmount)
   globalStats.lastUpdateBlock = blockNumber

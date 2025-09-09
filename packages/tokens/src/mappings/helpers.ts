@@ -142,7 +142,7 @@ export function loadOrCreateGlobalOptionsStats(): GlobalOptionsStats {
     stats = new GlobalOptionsStats('global')
     stats.totalExercises = ZERO_BI
     stats.totalXTokenConversions = ZERO_BI
-    stats.totalRegTokenConversions = ZERO_BI
+    stats.totalMainTokenConversions = ZERO_BI
     stats.totalETHCollected = ZERO_BD
     stats.lastUpdateBlock = ZERO_BI
     stats.lastUpdateTimestamp = ZERO_BI

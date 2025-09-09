@@ -170,7 +170,7 @@ type GlobalOptionsStats @entity(immutable: false) {
   totalXTokenConversions: BigInt!
   
   # total exercises where convert = false (received regular tokens)
-  totalRegTokenConversions: BigInt!
+  totalMainTokenConversions: BigInt!
   
   # sum of every paymentAmount in ETH for every exercise of all time
   totalETHCollected: BigDecimal!
