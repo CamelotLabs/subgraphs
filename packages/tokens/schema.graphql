@@ -1,0 +1,181 @@
+type User @entity(immutable: false) {
+  # user address
+  id: ID!
+
+  # options balance
+  optionsBalance: BigDecimal!
+
+  # Escrow token balances
+  escrowBalance: BigDecimal!
+  allocatedBalance: BigDecimal!
+  redemptionBalance: BigDecimal!
+  totalEscrowBalance: BigDecimal!
+
+  # exercise history tracking
+  allTimeExercisedLiquid: BigDecimal!
+  allTimeExercisedEscrow: BigDecimal!
+  allTimeEthPaid: BigDecimal!
+
+  # exercise transactions
+  exercises: [Exercise!] @derivedFrom(field: "user")
+
+  # timestamp of first interaction
+  createdAt: BigInt!
+  
+  # timestamp of last update
+  updatedAt: BigInt!
+}
+
+type Exercise @entity(immutable: true) {
+  # transaction hash + log index
+  id: ID!
+
+  # user who exercised
+  user: User!
+
+  # recipient of the exercise
+  recipient: Bytes!
+
+  # amount of options token exercised
+  amount: BigDecimal!
+
+  # ETH payment amount
+  paymentAmount: BigDecimal!
+
+  # discount in basis points
+  discountInBps: BigInt!
+
+  # whether converted to escrow token
+  convert: Boolean!
+
+  # transaction details
+  transaction: Transaction!
+
+  # block timestamp
+  timestamp: BigInt!
+
+  # block number
+  blockNumber: BigInt!
+}
+
+type Transaction @entity(immutable: true) {
+  # transaction hash
+  id: ID!
+
+  # block number
+  blockNumber: BigInt!
+  
+  # timestamp
+  timestamp: BigInt!
+  
+  # gas used
+  gasUsed: BigInt
+  
+  # gas price
+  gasPrice: BigInt
+}
+
+type Token @entity(immutable: false) {
+  # token address
+  id: ID!
+
+  # token symbol
+  symbol: String!
+  
+  # token name
+  name: String!
+  
+  # token decimals
+  decimals: BigInt!
+  
+  # total supply
+  totalSupply: BigDecimal!
+  
+  # total holders count
+  holderCount: BigInt!
+}
+
+type TokenBalance @entity(immutable: false) {
+  # user address + token address
+  id: ID!
+  
+  # token
+  token: Token!
+  
+  # user
+  user: User!
+  
+  # balance amount
+  amount: BigDecimal!
+  
+  # last updated
+  updatedAt: BigInt!
+}
+
+type TokenDayData @entity(immutable: false) {
+  # token address + day id
+  id: ID!
+  
+  # unix timestamp for start of day
+  date: Int!
+  
+  # token
+  token: Token!
+  
+  # daily volume (in token units)
+  dailyVolumeToken: BigDecimal!
+  
+  # daily exercised amount
+  dailyExercisedAmount: BigDecimal!
+  
+  # daily ETH paid for exercises
+  dailyEthPaid: BigDecimal!
+  
+  # total supply at end of day
+  totalSupply: BigDecimal!
+  
+  # holder count at end of day
+  holderCount: BigInt!
+}
+
+type GlobalEscrowStats @entity(immutable: false) {
+  # single entity with id "global"
+  id: ID!
+  
+  # total escrow token supply
+  totalSupply: BigDecimal!
+  
+  # total allocated escrow tokens
+  totalAllocated: BigDecimal!
+  
+  # total escrow tokens currently in redemption
+  totalInRedemption: BigDecimal!
+  
+  # number of unique escrow token holders
+  holdersCount: BigInt!
+  
+  # last update
+  lastUpdateBlock: BigInt!
+  lastUpdateTimestamp: BigInt!
+}
+
+type GlobalOptionsStats @entity(immutable: false) {
+  # single entity with id "global"
+  id: ID!
+  
+  # total number of exercises of all time
+  totalExercises: BigInt!
+  
+  # total exercises where convert = true (converted to xToken)
+  totalXTokenConversions: BigInt!
+  
+  # total exercises where convert = false (received regular tokens)
+  totalMainTokenConversions: BigInt!
+  
+  # sum of every paymentAmount in ETH for every exercise of all time
+  totalETHCollected: BigDecimal!
+  
+  # last update
+  lastUpdateBlock: BigInt!
+  lastUpdateTimestamp: BigInt!
+}
