@@ -12,7 +12,8 @@ const currentDir = getCurrentDir()
 dotenv.config({ path: path.resolve(currentDir, '../../../.env') });
 
 const chainConfigRaw = fs.readFileSync(path.resolve(currentDir, '../generated/chainConfig.json'), "utf-8")
-const chainConfig = JSON.parse(chainConfigRaw)
+const chainConfigData = JSON.parse(chainConfigRaw)
+const chainConfig = chainConfigData.chains || chainConfigData
 const TARGET_CHAIN_ID = process.env.CHAIN_ID || "42161"
 
 const config = chainConfig.find(chain => parseInt(chain.id) === parseInt(TARGET_CHAIN_ID))
@@ -60,11 +61,17 @@ const distributor = config?.contracts.distributor?.toLowerCase()
 // BLOCKS PARAMS
 const blocksName = config?.subgraphs.blocks.name
 
+// TOKENS PARAMS
+const tokensName = config?.subgraphs.tokens?.name
+const optionsToken = config?.contracts.oToken?.toLowerCase()
+const escrowToken = config?.contracts.xToken?.toLowerCase()
+
 console.log("AMMv2", config?.subgraphs.ammV2)
 console.log("AMMv3", config?.subgraphs.ammV3)
 console.log("AMMv4", config?.subgraphs.ammV4)
 console.log("blocks", config?.subgraphs.blocks)
 console.log("incentives", config?.subgraphs.incentives)
+console.log("tokens", config?.subgraphs.tokens)
 
 const TARGET_CHAIN: ChainInfo = new ChainInfo(
   network,
@@ -102,7 +109,12 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   distributor,
 
   // BLOCKS PARAMS
-  blocksName
+  blocksName,
+
+  // TOKENS PARAMS
+  tokensName,
+  optionsToken,
+  escrowToken
 )
 
 const targetChainContent = `
@@ -147,6 +159,10 @@ const TARGET_CHAIN: ChainInfo = new ChainInfo(
   "${distributor}",
 
   "${blocksName}",
+
+  "${tokensName}",
+  "${optionsToken}",
+  "${escrowToken}",
 );
 
 export default TARGET_CHAIN;

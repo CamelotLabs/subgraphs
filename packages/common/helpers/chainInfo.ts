@@ -39,6 +39,11 @@ class ChainInfo {
   campaignFactory: string;
   distributor: string;
 
+  // TOKENS PARAMS
+  tokensName: string;
+  optionsToken: string;
+  escrowToken: string;
+
   constructor(
     // UNIVERSAL SELECTED CHAIN PARAM - USED FOR `network` IN `subgraph.yaml`
     network: string,
@@ -77,6 +82,11 @@ class ChainInfo {
 
     // BLOCKS PARAMS
     blocksName: string,
+
+    // TOKENS PARAMS
+    tokensName: string,
+    optionsToken: string,
+    escrowToken: string,
   ) {
     // UNIVERSAL SELECTED CHAIN PARAM - USED FOR `network` IN `subgraph.yaml`
     this.network = network.toLowerCase()
@@ -115,6 +125,11 @@ class ChainInfo {
 
     // BLOCKS PARAMS
     this.blocksName = blocksName
+
+    // TOKENS PARAMS
+    this.tokensName = tokensName
+    this.optionsToken = optionsToken ? optionsToken.toLowerCase() : ZERO_ADDRESS
+    this.escrowToken = escrowToken ? escrowToken.toLowerCase() : ZERO_ADDRESS
   }
 }
 

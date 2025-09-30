@@ -112,6 +112,12 @@ importers:
         specifier: workspace:*
         version: link:../common
 
+  packages/tokens:
+    devDependencies:
+      common:
+        specifier: workspace:*
+        version: link:../common
+
   packages/xgrail:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
