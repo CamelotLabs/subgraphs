@@ -22,8 +22,7 @@ import {
   updateEscrowTotalSupply,
   ADDRESS_ZERO
 } from './helpers'
-
-let ESCROW_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+import { TARGET_CHAIN } from 'common'
 let ESCROW_DECIMALS = BigInt.fromI32(18)
 
 export function handleEscrowTransfer(event: TransferEvent): void {
@@ -41,14 +40,14 @@ export function handleEscrowTransfer(event: TransferEvent): void {
   let toAddress = to.toHex()
   
   // Skip internal transfers involving the escrow contract (handled by specific event handlers)
-  if (fromAddress.toLowerCase() == ESCROW_ADDRESS.toLowerCase() || 
-      toAddress.toLowerCase() == ESCROW_ADDRESS.toLowerCase()) {
+  if (fromAddress.toLowerCase() == TARGET_CHAIN.escrowToken.toLowerCase() || 
+      toAddress.toLowerCase() == TARGET_CHAIN.escrowToken.toLowerCase()) {
     return
   }
   
   // Load or create token
   let token = loadOrCreateToken(
-    Address.fromString(ESCROW_ADDRESS),
+    Address.fromString(TARGET_CHAIN.escrowToken),
     'ESCROW',
     'Escrowed Token',
     ESCROW_DECIMALS
@@ -264,7 +263,7 @@ export function handleFinalizeRedeem(event: FinalizeRedeemEvent): void {
     updateEscrowTotalSupply(stats)
     stats.save()
     
-    let token = Token.load(ESCROW_ADDRESS)
+    let token = Token.load(TARGET_CHAIN.escrowToken)
     if (token !== null) {
       token.holderCount = token.holderCount.minus(ONE_BI)
       token.save()
