@@ -1,6 +1,7 @@
 import { BigDecimal, BigInt, Bytes, Address } from '@graphprotocol/graph-ts'
 import { User, Token, TokenBalance, Transaction, TokenDayData, GlobalEscrowStats, GlobalOptionsStats } from '../../generated/schema'
 import { EscrowToken } from '../../generated/EscrowToken/EscrowToken'
+import {TARGET_CHAIN} from 'common'
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
@@ -152,8 +153,7 @@ export function loadOrCreateGlobalOptionsStats(): GlobalOptionsStats {
 
 export function updateEscrowTotalSupply(stats: GlobalEscrowStats): void {
   // Get actual totalSupply from the contract
-  let ESCROW_CONTRACT = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
-  let contract = EscrowToken.bind(Address.fromString(ESCROW_CONTRACT))
+  let contract = EscrowToken.bind(Address.fromString(TARGET_CHAIN.escrowToken))
   let totalSupplyCall = contract.try_totalSupply()
   
   if (!totalSupplyCall.reverted) {

@@ -13,8 +13,7 @@ import {
   updateTokenDayData,
   loadOrCreateGlobalOptionsStats
 } from './helpers'
-
-let OPTIONS_ADDRESS = '0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b'
+import { TARGET_CHAIN } from 'common'
 let OPTIONS_DECIMALS = BigInt.fromI32(18)
 let ETH_DECIMALS = BigInt.fromI32(18)
 
@@ -26,7 +25,7 @@ export function handleTransfer(event: TransferEvent): void {
   
   // Load or create token
   let token = loadOrCreateToken(
-    Address.fromString(OPTIONS_ADDRESS),
+    Address.fromString(TARGET_CHAIN.optionsToken),
     'OPTIONS',
     'Options Token',
     OPTIONS_DECIMALS
@@ -147,7 +146,7 @@ export function handleExercise(event: ExerciseEvent): void {
   exercise.save()
   
   // Update token day data
-  let token = Token.load(OPTIONS_ADDRESS)
+  let token = Token.load(TARGET_CHAIN.optionsToken)
   if (token !== null) {
     updateTokenDayData(
       token.id,
