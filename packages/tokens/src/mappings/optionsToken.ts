@@ -106,11 +106,11 @@ export function handleExercise(event: ExerciseEvent): void {
   
   // Update user exercise statistics
   if (event.params.convert) {
-    // If converted to escrow token
-    user.allTimeExercisedEscrow = user.allTimeExercisedEscrow.plus(amount)
+    // If converted to xToken
+    user.allTimeExercisedEscrowToken = user.allTimeExercisedEscrowToken.plus(amount)
   } else {
-    // If received as liquid GRAIL
-    user.allTimeExercisedLiquid = user.allTimeExercisedLiquid.plus(amount)
+    // If received as main token
+    user.allTimeExercisedMainToken = user.allTimeExercisedMainToken.plus(amount)
   }
   user.allTimeEthPaid = user.allTimeEthPaid.plus(paymentAmount)
   user.updatedAt = timestamp
@@ -120,9 +120,11 @@ export function handleExercise(event: ExerciseEvent): void {
   let globalStats = loadOrCreateGlobalOptionsStats()
   globalStats.totalExercises = globalStats.totalExercises.plus(ONE_BI)
   if (event.params.convert) {
-    globalStats.totalXTokenConversions = globalStats.totalXTokenConversions.plus(ONE_BI)
+    globalStats.totalEscrowTokenConversions = globalStats.totalEscrowTokenConversions.plus(ONE_BI)
+    globalStats.totalEscrowTokenConverted = globalStats.totalEscrowTokenConverted.plus(amount)
   } else {
     globalStats.totalMainTokenConversions = globalStats.totalMainTokenConversions.plus(ONE_BI)
+    globalStats.totalMainTokenConverted = globalStats.totalMainTokenConverted.plus(amount)
   }
   globalStats.totalETHCollected = globalStats.totalETHCollected.plus(paymentAmount)
   globalStats.lastUpdateBlock = blockNumber

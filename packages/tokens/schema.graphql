@@ -12,8 +12,8 @@ type User @entity(immutable: false) {
   totalEscrowBalance: BigDecimal!
 
   # exercise history tracking
-  allTimeExercisedLiquid: BigDecimal!
-  allTimeExercisedEscrow: BigDecimal!
+  allTimeExercisedMainToken: BigDecimal!
+  allTimeExercisedEscrowToken: BigDecimal!
   allTimeEthPaid: BigDecimal!
 
   # exercise transactions
@@ -45,7 +45,7 @@ type Exercise @entity(immutable: true) {
   # discount in basis points
   discountInBps: BigInt!
 
-  # whether converted to escrow token
+  # whether converted to xToken
   convert: Boolean!
 
   # transaction details
@@ -167,10 +167,12 @@ type GlobalOptionsStats @entity(immutable: false) {
   totalExercises: BigInt!
   
   # total exercises where convert = true (converted to xToken)
-  totalXTokenConversions: BigInt!
+  totalEscrowTokenConversions: BigInt!
+  totalEscrowTokenConverted: BigDecimal!
   
-  # total exercises where convert = false (received regular tokens)
+  # total exercises where convert = false (converted to mainToken)
   totalMainTokenConversions: BigInt!
+  totalMainTokenConverted: BigDecimal!
   
   # sum of every paymentAmount in ETH for every exercise of all time
   totalETHCollected: BigDecimal!
