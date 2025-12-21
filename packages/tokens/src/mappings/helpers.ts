@@ -32,9 +32,9 @@ export function loadOrCreateUser(address: Bytes, timestamp: BigInt): User {
     user.allocatedBalance = ZERO_BD
     user.redemptionBalance = ZERO_BD
     user.totalEscrowBalance = ZERO_BD
-    user.allTimeExercisedMainToken = ZERO_BD
-    user.allTimeExercisedEscrowToken = ZERO_BD
-    user.allTimeEthPaid = ZERO_BD
+    user.totalMainTokenExercisedAmount = ZERO_BD
+    user.totalEscrowTokenExercisedAmount = ZERO_BD
+    user.totalETHPaid = ZERO_BD
     user.createdAt = timestamp
     user.updatedAt = timestamp
     user.save()
@@ -142,10 +142,11 @@ export function loadOrCreateGlobalOptionsStats(): GlobalOptionsStats {
   if (stats === null) {
     stats = new GlobalOptionsStats('global')
     stats.totalExercises = ZERO_BI
-    stats.totalEscrowTokenConversions = ZERO_BI
-    stats.totalEscrowTokenConverted = ZERO_BD
-    stats.totalMainTokenConversions = ZERO_BI
-    stats.totalMainTokenConverted = ZERO_BD
+    stats.totalExercisedAmount = ZERO_BD
+    stats.totalEscrowTokenExercises = ZERO_BI
+    stats.totalEscrowTokenExercisedAmount = ZERO_BD
+    stats.totalMainTokenExercises = ZERO_BI
+    stats.totalMainTokenExercisedAmount = ZERO_BD
     stats.totalETHCollected = ZERO_BD
     stats.lastUpdateBlock = ZERO_BI
     stats.lastUpdateTimestamp = ZERO_BI

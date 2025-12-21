@@ -107,24 +107,25 @@ export function handleExercise(event: ExerciseEvent): void {
   // Update user exercise statistics
   if (event.params.convert) {
     // If converted to xToken
-    user.allTimeExercisedEscrowToken = user.allTimeExercisedEscrowToken.plus(amount)
+    user.totalEscrowTokenExercisedAmount = user.totalEscrowTokenExercisedAmount.plus(amount)
   } else {
     // If received as main token
-    user.allTimeExercisedMainToken = user.allTimeExercisedMainToken.plus(amount)
+    user.totalMainTokenExercisedAmount = user.totalMainTokenExercisedAmount.plus(amount)
   }
-  user.allTimeEthPaid = user.allTimeEthPaid.plus(paymentAmount)
+  user.totalETHPaid = user.totalETHPaid.plus(paymentAmount)
   user.updatedAt = timestamp
   user.save()
   
   // Update global options statistics
   let globalStats = loadOrCreateGlobalOptionsStats()
   globalStats.totalExercises = globalStats.totalExercises.plus(ONE_BI)
+  globalStats.totalExercisedAmount = globalStats.totalExercisedAmount.plus(amount)
   if (event.params.convert) {
-    globalStats.totalEscrowTokenConversions = globalStats.totalEscrowTokenConversions.plus(ONE_BI)
-    globalStats.totalEscrowTokenConverted = globalStats.totalEscrowTokenConverted.plus(amount)
+    globalStats.totalEscrowTokenExercises = globalStats.totalEscrowTokenExercises.plus(ONE_BI)
+    globalStats.totalEscrowTokenExercisedAmount = globalStats.totalEscrowTokenExercisedAmount.plus(amount)
   } else {
-    globalStats.totalMainTokenConversions = globalStats.totalMainTokenConversions.plus(ONE_BI)
-    globalStats.totalMainTokenConverted = globalStats.totalMainTokenConverted.plus(amount)
+    globalStats.totalMainTokenExercises = globalStats.totalMainTokenExercises.plus(ONE_BI)
+    globalStats.totalMainTokenExercisedAmount = globalStats.totalMainTokenExercisedAmount.plus(amount)
   }
   globalStats.totalETHCollected = globalStats.totalETHCollected.plus(paymentAmount)
   globalStats.lastUpdateBlock = blockNumber

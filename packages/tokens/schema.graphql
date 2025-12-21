@@ -12,9 +12,9 @@ type User @entity(immutable: false) {
   totalEscrowBalance: BigDecimal!
 
   # exercise history tracking
-  allTimeExercisedMainToken: BigDecimal!
-  allTimeExercisedEscrowToken: BigDecimal!
-  allTimeEthPaid: BigDecimal!
+  totalMainTokenExercisedAmount: BigDecimal!
+  totalEscrowTokenExercisedAmount: BigDecimal!
+  totalETHPaid: BigDecimal!
 
   # exercise transactions
   exercises: [Exercise!] @derivedFrom(field: "user")
@@ -165,14 +165,15 @@ type GlobalOptionsStats @entity(immutable: false) {
   
   # total number of exercises of all time
   totalExercises: BigInt!
+  totalExercisedAmount: BigDecimal!
   
   # total exercises where convert = true (converted to xToken)
-  totalEscrowTokenConversions: BigInt!
-  totalEscrowTokenConverted: BigDecimal!
+  totalEscrowTokenExercises: BigInt!
+  totalEscrowTokenExercisedAmount: BigDecimal!
   
   # total exercises where convert = false (converted to mainToken)
-  totalMainTokenConversions: BigInt!
-  totalMainTokenConverted: BigDecimal!
+  totalMainTokenExercises: BigInt!
+  totalMainTokenExercisedAmount: BigDecimal!
   
   # sum of every paymentAmount in ETH for every exercise of all time
   totalETHCollected: BigDecimal!
