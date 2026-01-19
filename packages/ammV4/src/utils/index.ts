@@ -92,3 +92,10 @@ export function loadTransaction(event: ethereum.Event): Transaction {
   transaction.save()
   return transaction as Transaction
 }
+
+export function absBigInt(value: BigInt): BigInt {
+  if (value.lt(ZERO_BI)) {
+    return value.times(BigInt.fromI32(-1))
+  }
+  return value
+}

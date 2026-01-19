@@ -7,13 +7,22 @@ import {
   STABLE_COINS,
   ONE_BD,
   ZERO_BD,
-  ZERO_BI
+  ZERO_BI,
+  MAX_TICK_DEVIATION_FOR_PRICING
 } from './constants'
 import { Bundle, Pool, Token } from './../types/schema'
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { exponentToBigDecimal, safeDiv } from '../utils/index'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { absBigInt, exponentToBigDecimal, safeDiv } from '../utils/index'
 
 let Q192 = Math.pow(2, 192)
+
+function getPoolPreviousTickOrCurrent(pool: Pool): BigInt | null {
+  const value = pool.previousTick
+  if (value === null) {
+    return pool.tick
+  }
+  return value
+}
 
 export function priceToTokenPrices(price: BigInt, token0: Token, token1: Token): BigDecimal[] {
   let num = price.times(price).toBigDecimal()
@@ -61,6 +70,17 @@ export function findEthPerToken(token: Token): BigDecimal {
     let poolAddress = whiteList[i]
     let pool = Pool.load(poolAddress)!
     if (pool.liquidity.gt(ZERO_BI)) {
+
+      // Ignore pools with suspiciously large tick deviation since the previous swap/update.
+      const previousTick = getPoolPreviousTickOrCurrent(pool)
+      if(pool.tick !== null && previousTick !== null) {
+        let tickDeviation = absBigInt((pool.tick as BigInt).minus(previousTick as BigInt))
+        if (tickDeviation.gt(MAX_TICK_DEVIATION_FOR_PRICING)) {
+          log.warning('ignore pool {} , tick deviation {}', [pool.id, tickDeviation.toString()])
+          continue
+        }
+      }
+
 
       if (pool.token0 == token.id) {
         // whitelist token is token1

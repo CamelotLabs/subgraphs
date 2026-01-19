@@ -11,7 +11,8 @@ export const MINIMUM_Matic_LOCKED = TARGET_CHAIN.minimumLiquidityThresholdETH
 export const WHITELIST_TOKENS = TARGET_CHAIN.whitelistTokens
 export const STABLE_COINS = TARGET_CHAIN.stableCoins
 
-export const FEE_DENOMINATOR = BigDecimal.fromString('1000000') 
+export const FEE_DENOMINATOR = BigDecimal.fromString('1000000')
+export const MAX_TICK_DEVIATION_FOR_PRICING = BigInt.fromI32(50000)
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)

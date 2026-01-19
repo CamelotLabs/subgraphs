@@ -266,6 +266,7 @@ export function handleCustomPoolCreated(event: CustomPool): void {
   pool.liquidityProviderCount = ZERO_BI
   pool.tickSpacing = BigInt.fromI32(60)
   pool.tick = ZERO_BI
+  pool.previousTick = ZERO_BI
   pool.txCount = ZERO_BI
   pool.liquidity = ZERO_BI
   pool.sqrtPrice = ZERO_BI
